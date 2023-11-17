@@ -1,12 +1,10 @@
 import React from 'react'
-import { FormularioRegistro } from '../../components/admin/FormularioRegistro'
+import { FormRegistroUsuarios } from '../../components/admin/FormRegistroUsuarios'
 export const RegistroUsuarios = () => {
   return (
     <section className='container'>
       <h1>RegistroUsuarios</h1>
-      <FormularioRegistro />
-
-
+      <FormRegistroUsuarios />
     </section>
   )
 }

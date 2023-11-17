@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const navbarCliente = () => {
+export const NavbarCliente = () => {
   return (
     <div>navbarCliente</div>
   )

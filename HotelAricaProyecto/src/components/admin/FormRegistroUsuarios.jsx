@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const FormularioRegistro = () => {
+export const FormRegistroUsuarios = () => {
   //Terer commit
   return (
     <section>
