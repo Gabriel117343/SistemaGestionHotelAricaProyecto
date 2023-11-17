@@ -1,6 +1,7 @@
 import React from 'react'
 
 export const FormularioRegistro = () => {
+  //Terer commit
   return (
     <section>
       <h2>FormularioRegistro</h2>
