@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navbar } from '../Navbar'
+import { getAllUsuarios } from '../../api/usuario.api'
 export const PanelAdmin = () => {
+  // useEffect(() => { // esto es para probar la api
+    
+  //   async function cargarUsuarios () {
+  //     const res = await getAllUsuarios()
+  //     console.log(res.data)
+  //   }
+  //   cargarUsuarios
+  // })
   return (
     <>
       <Navbar />{/* eliminar y reemplzar por otro navbar */}
