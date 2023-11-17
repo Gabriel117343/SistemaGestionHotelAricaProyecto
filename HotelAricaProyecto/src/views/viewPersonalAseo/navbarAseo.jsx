@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const navbarAseo = () => {
+export const NavbarAseo = () => {
   return (
     <div>navbarAseo</div>
   )
