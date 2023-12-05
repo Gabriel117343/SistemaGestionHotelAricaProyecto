@@ -19,6 +19,16 @@ export const PanelAdmin = () => {
         <p>Gestion Usuarios</p>
         <p>Gestion Habitaciones</p>
         <p>Infomracion</p>
+        <form action="">
+          <input type="text" className="form-control" list='peliculas' placeholder='Ej: Avengers' />
+          <datalist id='peliculas'>
+            <option value="Avengers">Avengers</option>
+            <option value="Avengers 2">Avengers 2</option>
+            <option value="Avengers 3">Avengers 3</option>
+            <option value="Avengers 4">Avengers 4</option>
+          </datalist>
+
+        </form>
       </main>
     </>
     
