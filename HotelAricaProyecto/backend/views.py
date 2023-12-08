@@ -30,6 +30,7 @@ from django.contrib.auth.tokens import default_token_generator # para recuperar 
 from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_str # para recuperar contraseña
 from django.utils.http import urlsafe_base64_decode # para recuperar contraseña
+from rest_framework.decorators import api_view
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
 
 #permitir 
@@ -57,9 +58,9 @@ User = get_user_model() # esto es para obtener el modelo de usuario que se está
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@ensure_csrf_cookie # este método es para obtener el token csrf desde la api en React
+@api_view(['GET'])
 def get_csrf_token(request):
-    return JsonResponse({'csrftoken': get_token(request)})
+    return Response({'csrftoken': get_token(request)})
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny] # esto es para permitir cualquier usuario porque el usuario no está autenticado cuando se restablece la contraseña
     def post(self, request):
@@ -76,26 +77,52 @@ class ResetPasswordView(APIView):
         else:
             return Response({'status': 'error'}, status=400)
 
-@login_required
-@csrf_exempt
-def get_usuario_logeado(request): # este método es para obtener el usuario logeado desde la api en React
-    if request.method == 'GET':
-        user = request.user
-        print(user)
-        if user.is_authenticated:
-            return JsonResponse({'usuario': {'nombre': user.nombre, 'rol': user.rol, 'jornada': user.jornada}}, status=200)
-        else:
-            return JsonResponse({'error': 'No hay usuario logeado'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)       
-@csrf_exempt
-def login(request): # este método es para logearse desde la api en React
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+class GetUsuarioLogeado(APIView):
+    
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    def get(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
+        try:
+            user = Token.objects.get(key=token).user 
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Aquí puedes devolver los datos del usuario que quieras
+        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=status.HTTP_200_OK)   
+# @csrf_exempt
+# def login(request): # este método es para logearse desde la api en React
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+
+#         user = authenticate(request, email=email, password=password)
+        
+#         if user is not None:
+#             auth_login(request, user)
+#             try:
+#                 Token.objects.filter(user=user).delete()  # Elimina cualquier token existente
+#                 token, created = Token.objects.get_or_create(user=user)
+#                 print(token.key) # Imprime el token
+#             except Exception as e:
+#                 return JsonResponse({'error': 'Cannot create token'}, status=500)
+#             return JsonResponse({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=200)
+#         else:
+            
+#             return JsonResponse({'error': 'Credenciales Invalidas'}, status=400)
+            
+#     else:
+#         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+class LoginView(APIView):
+    
+    permission_classes = [AllowAny] # esto es para permitir cualquier usuario porque el usuario no está autenticado cuando se logea
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
 
         user = authenticate(request, email=email, password=password)
-        
+
         if user is not None:
             auth_login(request, user)
             try:
@@ -103,26 +130,31 @@ def login(request): # este método es para logearse desde la api en React
                 token, created = Token.objects.get_or_create(user=user)
                 print(token.key) # Imprime el token
             except Exception as e:
-                return JsonResponse({'error': 'Cannot create token'}, status=500)
-            return JsonResponse({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=200)
+                return Response({'error': 'Cannot create token'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=status.HTTP_200_OK)
         else:
-            
-            return JsonResponse({'error': 'Credenciales Invalidas'}, status=400)
-            
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-@csrf_exempt
-def logout_view(request):
-    if request.method == 'POST':
-        # Elimina el token del usuario - asi ya no se puede utilizar para autenticar al usuario
+            return Response({'error': 'Credenciales Invalidas'}, status=status.HTTP_400_BAD_REQUEST)   
+class LogoutView(APIView):
+    # solo autenticados
+    
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    def post(self, request):
+        # Elimina el token del usuario
         Token.objects.filter(user=request.user).delete()
-        auth_logout(request) # desloguea al usuario
-        #print el estado de la sesion
-        print(request.user.is_authenticated) # False
-        return JsonResponse({'message': 'Se ha deslogueado Exitosamente'}, status=200)
+        auth_logout(request)  # desloguea al usuario
+        return Response({'message': 'Se ha deslogueado Exitosamente'}, status=status.HTTP_200_OK)
+# @csrf_exempt
+# def logout_view(request):
+#     if request.method == 'POST':
+#         # Elimina el token del usuario - asi ya no se puede utilizar para autenticar al usuario
+#         Token.objects.filter(user=request.user).delete() 
+#         auth_logout(request) # desloguea al usuario
+#         #print el estado de la sesion
+#         print(request.user.is_authenticated) # False
+#         return JsonResponse({'message': 'Se ha deslogueado Exitosamente'}, status=200)
         
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+#     else:
+#         return JsonResponse({'error': 'Invalid request method'}, status=400)
     
 
 # recibe una post con un email para recuperar la contraseña del usuario y se envia un correo con la nueva contraseña

@@ -28,28 +28,28 @@ export const token = async () => {
 }
 export const login = async (usuario) => {
   const csrftoken = await token() // Obtener el token CSR
+  console.log(csrftoken)
   return usuarioLoginApi.post('/', usuario, {
     headers: {
       'Content-Type': 'multipart/form-data',
-      'X-CSRFToken': csrftoken
+      'X-CSRFToken': csrftoken,
+      
     }
   })
 }
-export const logout = async () => {
-  const csrftoken = await token() // Obtener el token CSRF
+export const logout = async (token) => {
+  console.log(token)
   return usuarioLogoutApi.post('/', {}, {
     headers: {
-      'Content-Type': 'multipart/form-data',
-      'X-CSRFToken': csrftoken
+      Authorization: `Token ${token}`	 
     }
   })
 }
-export const getUser = () => {
+export const getUser = async (token) => {
   console.log('Oteniendo usuario actual...')
-  const csrftoken = token() // Obtener el token CSRF
-  return usuarioGetApi.get('/', {}, {
+  return usuarioGetApi.get('/', {
     headers: {
-      'X-CSRFToken': csrftoken
+      Authorization: `Token ${token}`
     }
   })
 }

@@ -26,29 +26,43 @@
 
 //   )
 // }
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import './index.css'
 import { Link } from 'react-router-dom'
 import { LoginContext } from '../context/LoginContext'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 export const Navbar = () => {
-  const { state, cerrarSesion } = useContext(LoginContext)
+  const { state, cerrarSesion, obtenerUsuarioLogeado } = useContext(LoginContext)
   const navigate = useNavigate()
-  console.log(state.isAuth)
-  const cerrarSesionActual = async () => {
-    const { success, message } = await cerrarSesion()
-    if (success) {
-      console.log(message)
-      toast.success(message)
-      setTimeout(() => {
 
-        navigate('/')
-        
-      }, 1000)
-      
-    } else {
-      console.log(message)
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      obtenerUsuarioLogeado(token)
+    }
+  }, [])
+  const cerrarSesionActual = async () => {
+
+    try {
+      const { success, message } = await cerrarSesion(state.token)
+      if (success) {
+        console.log(message)
+        toast.success(message)
+        localStorage.removeItem('token')
+        setTimeout(() => {
+
+          navigate('/')
+
+        }, 1000)
+
+      } else {
+        console.log(message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+
     }
   }
   
