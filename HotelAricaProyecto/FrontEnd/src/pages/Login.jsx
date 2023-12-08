@@ -89,7 +89,7 @@ export const Login = () => {
                         name='password'
                       />
                     </div>
-                    <p className="small mb-3 pb-lg-2"><a href="#!" className="text-white-50">Olvidaste tu contraseña?</a></p>
+                    <p  className="small mb-3 pb-lg-2"><Link to='/form-envio-correo' className="text-white-50">Olvidaste tu contraseña?</Link></p>
                     
                     <button type='submit' className="btn form-control btn-outline-light btn-lg px-5" disabled={btnisDisabled}>Login</button>
                   </form>

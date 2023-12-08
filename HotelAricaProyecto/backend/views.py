@@ -17,6 +17,7 @@ from .serializer import UsuarioSerializer
 from rest_framework import status
 from rest_framework.response import Response
 import json
+
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from django.core.mail import send_mail # para enviar correos
@@ -160,33 +161,34 @@ class LogoutView(APIView):
 # recibe una post con un email para recuperar la contraseña del usuario y se envia un correo con la nueva contraseña
 class GeneratePasswordResetLinkView(APIView):
     permission_classes = [AllowAny]
-
+    print('Generando passowrd reset link')
     def post(self, request):
         email = request.data.get('email')
         user = Usuario.objects.filter(email=email).first()
         if user:
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))  # remove .decode()
+
             return Response({'uid': uid, 'token': token})  # return 'uid' and 'token' instead of 'reset_link
         else:
             return Response({'error': 'User not found'}, status=404)
 class SendPasswordResetEmailView(APIView):
     permission_classes = [AllowAny]
-    print('YYYYYYYYYY')
     def post(self, request):
-        email = request.data.get('email')
-        print('UUUUUUUUUUUUUUUUUUUU')
-        print(email)
-        reset_link = request.data.get('reset_link')
-        print(reset_link)
-        send_mail(
-            'Restablecimiento de contraseña',
-            f'Haga clic en el siguiente enlace para restablecer su contraseña: {reset_link}',
-            'hotel.arica00@gmail.com',
-            [email],
-            fail_silently=False,
-        )
-        return Response({'message': 'Correo electrónico de restablecimiento de contraseña enviado'})
+        try:
+            email = request.data.get('email')
+            reset_link = request.data.get('reset_link')
+            
+            send_mail(
+                'Restablecimiento de contraseña',
+                f'Haga clic en el siguiente enlace para restablecer su contraseña: {reset_link}',
+                'hotel.arica00@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+            return Response({'message': 'Correo electrónico de restablecimiento de contraseña enviado'})
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 class ReservaView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar reservas desde la api en React
     serializer_class = ReservaSerializer
