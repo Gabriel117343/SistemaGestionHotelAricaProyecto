@@ -2,11 +2,13 @@ import React from 'react'
 
 export const LoginReducer = (state, action) => {
   const { type, payload } = action // destructurin de action
+  // EN USE REDUCER SE TRABAJA A TRAVEZ DEL ESTADO ACTUAL Y NO SE PUEDE CAMBIAR DIRECTAMENTE
   switch(type) {
     
     case 'GUARDAR_USUARIO':
       return {
         ...state, // esto es el estado actual __ los ... es para no perder el estado actual y solo cambiar lo que se necesita__
+        
         usuario: payload.usuario, // esto es el usuario que viene de la base de datos
         token: payload.token, // esto es el token que viene de la base de datos
         isAuth: true // esto es para saber si el usuario esta autenticado
