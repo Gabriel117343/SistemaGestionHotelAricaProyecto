@@ -21,7 +21,6 @@ export const LoginProvider = ({ children }) => {
         const res = await login(usuario)
         console.log(res)
         if (res.status === 200) {
-          console.log(res.data)
           const data = { token: res.data.token };
 
           // Guarda el token en el localstorage
