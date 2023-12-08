@@ -22,8 +22,12 @@ export const LoginProvider = ({ children }) => {
         console.log(res)
         if (res.status === 200) {
           console.log(res.data)
+          const data = { token: res.data.token };
+
+          // Guarda el token en el localstorage
+          localStorage.setItem('token', data.token);
           dispatch({
-            type: 'LOGIN',
+            type: 'GUARDAR_USUARIO',
             payload: res.data
           })
   
@@ -37,21 +41,30 @@ export const LoginProvider = ({ children }) => {
     })
   }
   const cerrarSesion = async () => {
-    try {
-      const res = await logout()
-      dispatch({
-        type: 'LOGOUT'
-      })
-      return { success: true, message: res.data.message }
-    } catch (error) {
-      return { success: false, message: res.data.message }
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await logout(state.token)
+        if (res.status === 200) {
+          dispatch({
+            type: 'LIMPIAR_USUARIO'
+          })
+          resolve ({ success: true, message: res.data.message })
+
+        }
+        
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+      
+    })
   }
-  const obtenerUsuarioLogeado = async () => {
+  const obtenerUsuarioLogeado = async (token) => {
     try {
-      const res = await getUser()
-      dispatch({
-        type: 'LOGIN',
+      const res = await getUser(token)
+      console.log(res)
+      dispatch({ // guardar el usuario en el estado
+        type: 'GUARDAR_USUARIO',
         payload: res.data
       })
       return { success: true, message: res.data.message }

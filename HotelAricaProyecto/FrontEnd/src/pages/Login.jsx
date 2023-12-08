@@ -23,18 +23,19 @@ export const Login = () => {
       const { success, message, rol } = await iniciarSesion(usuario)
     
       toast.dismiss(toastId) // cerrar el toast de cargando
-      setTimeout(() => {
         if (success) {
           setBtnisDisabled(false)
           toast.success(message, { id: 'loading' })
-          console.log(rol)
-         
-          if (rol === 'administrador') {
-            navigate('/admin')
-          } else if (rol === 'recepcionista') {
-            navigate('/recepcionista')
-          }
-    
+          setTimeout(() => {
+            if (rol === 'administrador') {
+              navigate('/admin')
+            } else if (rol === 'recepcionista') {
+              navigate('/recepcionista')
+            } else if (rol === 'personalaseo') {
+              navigate('/personalaseo')
+            }
+
+          }, 1500) 
         } else {
           setBtnisDisabled(false)
           toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
@@ -42,7 +43,7 @@ export const Login = () => {
         }
 
 
-      }, 1000)
+
       
     } catch (error) {
       setBtnisDisabled(false)
@@ -55,8 +56,8 @@ export const Login = () => {
   
   return (
     <section className="gradient-custom">
-      <div className="container py-5 h-100">
-        <div className="row d-flex justify-content-center align-items-center h-100">
+      <div className="container py-5">
+        <div className="row d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
             <div className="card bg-dark text-white" style={{ borderRadius: '1rem' }}>
               <div className="card-body px-5 pb-4 text-center">
