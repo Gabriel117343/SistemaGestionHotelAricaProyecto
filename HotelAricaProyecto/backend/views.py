@@ -13,7 +13,7 @@ from django.contrib.auth.hashers import make_password
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from .serializer import UsuarioSerializer
-#importamos el status para darle un estado a la respuesta
+#importamos el status para darle un estado a la respuesta ---
 from rest_framework import status
 from rest_framework.response import Response
 import json
