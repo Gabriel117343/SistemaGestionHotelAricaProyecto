@@ -25,6 +25,7 @@ export const LoginProvider = ({ children }) => {
           const data = { token: res.data.token };
 
           // Guarda el token en el localstorage
+          // porque cuando se recarga la pagina se pierde el estado del usuario y el token se mantiene con localstorage 
           localStorage.setItem('token', data.token);
           dispatch({
             type: 'GUARDAR_USUARIO',
@@ -35,7 +36,7 @@ export const LoginProvider = ({ children }) => {
             resolve({ success: true, message: res.data.message, rol: res.data.usuario.rol })
           }, 2000)
         }
-      } catch (error) {
+      } catch (error) { // error lo que hace es que si hay un error en la peticion lo que hace es que lo muestra en el toast
         reject(new Error(error.response.data.error))
       }
     })
@@ -60,6 +61,7 @@ export const LoginProvider = ({ children }) => {
     })
   }
   const obtenerUsuarioLogeado = async (token) => {
+    // el token se envia por parametro porque se necesita para hacer la peticion a la api para trae el usuario logeado
     try {
       const res = await getUser(token)
       console.log(res)
