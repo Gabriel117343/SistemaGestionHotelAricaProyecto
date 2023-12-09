@@ -52,9 +52,10 @@ export const FormEnvioCorreo = () => {
 
           </div>
           
-          <form onSubmit={recuperarContraseña}>
-            <input type='text' className='form-control' name='email' />
-            <button type='submit' className='btn btn-info'>Recuperar contraseña</button>
+          <form onSubmit={recuperarContraseña} className='mt-4'>
+            <label htmlFor="correo">Correo</label>
+            <input type='text' className='form-control' name='email' id='correo'/>
+            <button type='submit' className='btn btn-info mt-3'>Recuperar contraseña</button>
           </form>
 
         </section>

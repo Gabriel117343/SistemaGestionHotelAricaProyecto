@@ -32,6 +32,7 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_str # para recuperar contraseña
 from django.utils.http import urlsafe_base64_decode # para recuperar contraseña
 from rest_framework.decorators import api_view
+from django.contrib.sites.shortcuts import get_current_site # para obtener el dominio actual
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
 
 #permitir 
@@ -89,7 +90,10 @@ class GetUsuarioLogeado(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         
         # Aquí puedes devolver los datos del usuario que quieras
-        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=status.HTTP_200_OK)   
+        # Obtén el dominio actual
+        current_site = get_current_site(request)
+        domain = current_site.domain
+        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None}}, status=status.HTTP_200_OK)   
 # @csrf_exempt
 # def login(request): # este método es para logearse desde la api en React
 #     if request.method == 'POST':
@@ -132,7 +136,9 @@ class LoginView(APIView):
                 print(token.key) # Imprime el token
             except Exception as e:
                 return Response({'error': 'Cannot create token'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada}}, status=status.HTTP_200_OK)
+            current_site = get_current_site(request) # Obteniedo el dominio actual http://localhost:8000  para que la imagen se pueda mostrar en el front End
+            domain = current_site.domain
+            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None}}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales Invalidas'}, status=status.HTTP_400_BAD_REQUEST)   
 class LogoutView(APIView):

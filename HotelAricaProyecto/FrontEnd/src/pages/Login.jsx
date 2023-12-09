@@ -28,7 +28,7 @@ export const Login = () => {
           toast.success(message, { id: 'loading' })
           setTimeout(() => {
             if (rol === 'administrador') {
-              navigate('/admin')
+              navigate('/admin/home')
             } else if (rol === 'recepcionista') {
               navigate('/recepcionista')
             } else if (rol === 'personalaseo') {
