@@ -32,6 +32,8 @@ import { Link } from 'react-router-dom'
 import { LoginContext } from '../context/LoginContext'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import logo from '../../public/images/logoHotelArica.png'; // Importa tu logo
+
 export const Navbar = () => {
   const { state, cerrarSesion } = useContext(LoginContext)
   const navigate = useNavigate()
@@ -68,18 +70,18 @@ export const Navbar = () => {
         
         <div className='container align-items-center justify-content-between '>
           <div>
-            <img width="150px" src='images/logoHotelArica.png' alt='Logo Arica' />
+            <img width="150px" src={logo} alt='Logo Arica' />
             
           </div>
           
           {state.isAuth ? (
             
-            <div>
+            <div className='d-flex align-items-center'>
               <i className='bi bi-box-arrow-left text-white'></i>                    
               <button onClick={cerrarSesionActual} className='btn link text-white'>Logout</button>
             </div>
           ) : (
-            <div>   
+            <div className='d-flex align-items-center'>   
                        
               <Link className='link' to='/login'>Login</Link>
               <i class="bi bi-box-arrow-right text-white px-2"></i>

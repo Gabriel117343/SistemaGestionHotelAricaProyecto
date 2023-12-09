@@ -19,7 +19,7 @@ export const LoginProvider = ({ children }) => {
     return new Promise(async (resolve, reject) => {
       try {
         const res = await login(usuario)
-        console.log(res)
+        console.log(res.data)
         if (res.status === 200) {
           const data = { token: res.data.token };
 

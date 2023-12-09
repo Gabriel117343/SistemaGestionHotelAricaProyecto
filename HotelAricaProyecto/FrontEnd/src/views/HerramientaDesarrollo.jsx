@@ -5,10 +5,10 @@ export const HerramientaDesarrollo = () => {
   const { state } = useContext(LoginContext)
   console.log(state.isAuth)
   return (
-    <main className='container'>
+    <footer className='container'>
       <section className='d-flex justify-content-center'>
         {state && state.usuario ? (
-            <section style={{width:'50%', margin: '0 auto', border: 'dotted ', borderRadius: '30px', maxHeight: '30px'}} className="d-flex gap-2 text-white justify-content-center aligns-items-center bg-success fixed-bottom">
+            <section style={{width:'50%', margin: '0 auto', borderRadius: '30px', maxHeight: '30px'}} className="d-flex gap-2 text-white justify-content-center aligns-items-center bg-success fixed-bottom">
               <strong className='text-'>Nombre:</strong>
               <p>{state.usuario.nombre}</p>
             
@@ -22,7 +22,7 @@ export const HerramientaDesarrollo = () => {
           )
           :
           (
-            <section style={{width:'50%', margin: '0 auto', border: 'dotted white', borderRadius: '30px', maxHeight: '30px'}} className="container bg-warning fixed-bottom">
+            <section style={{width:'50%', margin: '0 auto', borderRadius: '30px', maxHeight: '30px'}} className="container bg-warning fixed-bottom">
 
               <div className="text-center">
                 <strong className='text-danger'>No hay usuario logeado</strong>
@@ -40,6 +40,6 @@ export const HerramientaDesarrollo = () => {
         
         
   
-    </main>
+    </footer>
   )
 }
