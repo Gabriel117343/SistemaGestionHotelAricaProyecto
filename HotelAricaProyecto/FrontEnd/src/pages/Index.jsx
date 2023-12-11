@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
 import './index.css'
- export const Index = () => {
+import { LoginContext } from '../context/LoginContext';
+export const Index = () => {
+
+  const { cerrarSesion } = useContext(LoginContext)
+
+  useEffect(() => {
+
+   
+    localStorage.removeItem('token'); // Elimina el token del localstorage
+    cerrarSesion() // Elimina el token del estado global
+    console.log('Borrando Token...')
+  }, [])
 
   const images = [
     {

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Reserva
+from .models import Usuario, Reserva, Habitacion
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Usuario para serializar los datos
         model = Usuario
@@ -13,7 +13,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
             nombre=validated_data['nombre'],
             apellido=validated_data['apellido'],
             telefono=validated_data['telefono'],
-            imagen=validated_data['imagen'],
             jornada=validated_data['jornada'],
             rol=validated_data['rol'],
             # otros campos aquí
@@ -30,8 +29,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
         instance.imagen = validated_data.get('imagen', instance.imagen)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.jornada = validated_data.get('jornada', instance.jornada)
-        instance.rol = validated_data.get('rol', instance.rol)
-        # otros campos aquí
+        
+       
         if 'password' in validated_data: # si se envía una contraseña en la petición put, se encripta y se guarda en la base de datos
             instance.set_password(validated_data['password'])
         instance.save()
@@ -40,3 +39,21 @@ class ReservaSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Reserva para serializar los datos
         model = Reserva
         fields = '__all__'
+class HabitacionSerializer(serializers.ModelSerializer):
+    class Meta: # metadatos del modelo Habitacion para serializar los datos
+        model = Habitacion
+        fields = '__all__'
+        
+    def create (self, validated_data):
+        habitacion = Habitacion.objects.create(
+            numero=validated_data['numero'],
+            descripcion=validated_data['descripcion'],
+            tipo=validated_data['tipo'],
+            precio=validated_data['precio'],
+            imagen=validated_data['imagen'],
+            estado=validated_data['estado'],
+            cama=validated_data['cama'],
+            ocupacion=validated_data['ocupacion'],
+        )
+        habitacion
+        return habitacion

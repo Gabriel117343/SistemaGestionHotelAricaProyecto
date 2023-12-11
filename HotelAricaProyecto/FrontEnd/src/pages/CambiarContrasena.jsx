@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-export const Cambiar_contrasena = () => {
+export const CambiarContrasena = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const { uid, token } = useParams()
   console.log(uid)
+  console.log(token)
   const resetPassword = async () => {
     if (password === confirmPassword) {
       const response = await axios.post('http://127.0.0.1:8000/usuarios/reset_password/', { uid, token, password })

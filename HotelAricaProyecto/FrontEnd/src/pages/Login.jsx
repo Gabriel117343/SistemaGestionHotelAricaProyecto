@@ -1,17 +1,34 @@
-import React, { useState, useContext, useId } from 'react'
-import { LoginContext } from '../context/LoginContext'
+import React, { useState, useId, useEffect, useContext } from 'react'
+import './index.css'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import debounce from 'lodash/debounce'
-import { set } from 'lodash'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' // icono eye para usar en input contraseña
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { LoginContext } from '../context/LoginContext'
+// importar sweetalert2
+import Swal from 'sweetalert2'
+
 // const navigate = useNavigate();
 
 export const Login = () => {
-  const { iniciarSesion } = useContext(LoginContext)
 
+  const { cerrarSesion, iniciarSesion } = useContext(LoginContext) 
   const [btnisDisabled, setBtnisDisabled] = useState(false)
+  const [mostrarContraseña, setMostrarContraseña] = useState(false)
   const idFormLogin = useId() // id para el form de login
+
+  useEffect(() => {
+
+   
+    localStorage.removeItem('token'); // Elimina el token del localstorage
+    cerrarSesion() // Elimina el token del estado global
+    console.log('Borrando Token...')
+  }, [])
+ 
+
+  
   
   const navigate = useNavigate()
   const enviarFormLogin = async (event) => { 
@@ -41,18 +58,30 @@ export const Login = () => {
           toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
           toast.error(message)
         }
-
-
-
-      
     } catch (error) {
       setBtnisDisabled(false)
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-      toast.error(error.message)
+      if (error.message === 'Credenciales Invalidas') {
+        toast.error('Email o contraseña incorrectos')
+      } else {
+        //mensaje personalizado de acceso denegado con sweetalert 2
+        Swal.fire({
+          icon: 'error',
+          title: 'Acceso denegado',
+          text: 'Su cuenta esta dada de baja, contacte con el administrador',
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#3085d6',
+        })
+
+      }
+      
     }
   }
   
-
+  // Activa o desactivar la visualizacion de la contraseña atravez del estado anterior
+  const estadoContraseña = () => {
+    setMostrarContraseña(prevState => !prevState)
+  }
   
   return (
     <section className="gradient-custom">
@@ -80,14 +109,20 @@ export const Login = () => {
                         name='email'        
                       />
                     </div>
-                    <div className="form-outline form-white mb-4">
+                    <div className="form form-white mb-4 contraseña-container">
                       <input
-                        type="password"
                         id={`${idFormLogin}-password`}
                         className="form-control form-control-lg"
                         placeholder="Password"
                         name='password'
+                        type={mostrarContraseña ? 'text' : 'password'}
                       />
+                      <span className='icon'>
+                        <FontAwesomeIcon style={{width: '25px', height: '25px'}}
+                          icon={mostrarContraseña ? faEyeSlash : faEye}
+                          onClick={estadoContraseña}
+                        />
+                      </span>
                     </div>
                     <p  className="small mb-3 pb-lg-2"><Link to='/form-envio-correo' className="text-white-50">Olvidaste tu contraseña?</Link></p>
                     

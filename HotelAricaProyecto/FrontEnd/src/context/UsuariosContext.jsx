@@ -1,20 +1,21 @@
-import { createContext, useReducer } from 'react'
-import { UsuarioReducer } from './UsuarioReducer'
+import { createContext, useReducer, useContext } from 'react'
+import { UsuariosReducer } from './UsuariosReducer'
 import { getAllUsuarios, getUsuario, createUsuario, deleteUsuario, updateUsuario } from '../api/usuario.api'
-
+import { LoginContext } from './LoginContext'
 // 1 Crear el contexto
-export const UsuarioContext = createContext()
+export const UsuariosContext = createContext()
 
 // contexto para todo el arbol de componentes de Administrador
 
-export const UsuarioProvider = ({ children }) => {
+export const UsuariosProvider = ({ children }) => {
   const initialState = { // Estado inicial
     usuarios: [], // lista de usuarios
     usuarioSeleccionado: null
   }
-  const [state, dispatch] = useReducer(UsuarioReducer, initialState)
+  const { state } = useContext(LoginContext) // se obtiene el token del usuario
+  const [stateUsuario, dispatch] = useReducer(UsuariosReducer, initialState)
   const getUsuarios = async () => {
-    const token = '2665d766759832579608705836059eb0a31ae75e'
+    const token = state.token
     try {
       const res = await getAllUsuarios(token)
       dispatch({
@@ -28,17 +29,26 @@ export const UsuarioProvider = ({ children }) => {
     }
   }
   const getUsuarioSeleccionado = async (id) => {
-    const token = '018e295557cdcf9828269d3927ee3dcfefdb48e5'
+    const token = state.token
+    try {
+      const res = await getUsuario(id, token)
 
-    const res = await getUsuario(id, token)
+      dispatch({
+        type: 'GET_USUARIO',
+        payload: res.data // guarda el usuario seleccionado en el estado usuarioSeleccionado
+      })
+      return { success: true, message: 'Usuario obtenido!' }
 
-    dispatch({
-      type: 'GET_USUARIO',
-      payload: res.data // guarda el usuario seleccionado en el estado usuarioSeleccionado
-    })
+    } catch (error) {
+      return { success: false, message: 'Hubo un error al obtener el usuario.' }
+    }
+    
+    
+  
   }
   const crearUsuario = async (usuario) => {
-    const token = '2665d766759832579608705836059eb0a31ae75e'
+    const token = state.token
+    console.log(token)
     try {
       const res = await createUsuario(usuario, token) // espera a que se cree el usuario para continuar con la ejecucion del codigo y no se salte el toast de exito
       dispatch({
@@ -52,7 +62,7 @@ export const UsuarioProvider = ({ children }) => {
   }
 
   const eliminarUsuario = async (id) => {
-    const token = '018e295557cdcf9828269d3927ee3dcfefdb48e5'
+    const token = state.token
     try {
       // capturando la respuesta
       const res = await deleteUsuario(id, token)
@@ -67,8 +77,11 @@ export const UsuarioProvider = ({ children }) => {
   } // en mvc este es el controlador que se encarga de eliminar el usuario de la base de datos y de actualizar el estado de la lista de usuarios
 
   const modificarUsuario = async (id, usuario) => {
+    const token = state.token
+  
     try {
-      await updateUsuario(id, usuario)
+      const res = await updateUsuario(id, usuario, token)
+      console.log(res.data)
       dispatch({
         type: 'UPDATE_USUARIO',
         payload: usuario // actualiza el usuario  que se modifico y deja los demas igual como estaban antes de la modificacion
@@ -80,8 +93,8 @@ export const UsuarioProvider = ({ children }) => {
   }
 
   return (
-    <UsuarioContext.Provider value={{
-      state,
+    <UsuariosContext.Provider value={{
+      stateUsuario,
       getUsuarios,
       crearUsuario,
       eliminarUsuario,
@@ -89,6 +102,6 @@ export const UsuarioProvider = ({ children }) => {
       modificarUsuario
     }}
     >{children}
-    </UsuarioContext.Provider>
+    </UsuariosContext.Provider>
   )
 }

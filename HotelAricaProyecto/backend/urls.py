@@ -2,12 +2,15 @@ from django.urls import path, include
 from rest_framework.documentation import include_docs_urls 
 from rest_framework import routers
 from backend import views
-from .views import SendPasswordResetEmailView, GeneratePasswordResetLinkView, ResetPasswordView, LogoutView, LoginView, GetUsuarioLogeado
+from .views import *
 from django.contrib.auth import views as auth_views
 router = routers.DefaultRouter() # tiene el crud de los usuarios"""
+#usuarios
 router.register(r'usuarios', views.UsuarioView, 'usuarios')
-#reserva
+#reservas
 router.register(r'reservas', views.ReservaView, 'reservas')
+#habitaciones
+router.register(r'habitaciones', views.HabitacionView, 'habitaciones')
 urlpatterns = [
     path('datos/v1/', include(router.urls)),
     path('docs/', include_docs_urls(title="Usuarios Api")),
@@ -18,4 +21,5 @@ urlpatterns = [
     path('generate_password_reset_link/', GeneratePasswordResetLinkView.as_view()),
     path('send_password_reset_email/',  SendPasswordResetEmailView.as_view()),
     path('reset_password/', ResetPasswordView.as_view()),
+
 ]
