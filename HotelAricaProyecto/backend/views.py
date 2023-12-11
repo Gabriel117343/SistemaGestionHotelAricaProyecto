@@ -1,8 +1,8 @@
 from cmath import e
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
-from .serializer import UsuarioSerializer, ReservaSerializer
-from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion
+from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer
+from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
 from django.http import JsonResponse
@@ -66,7 +66,11 @@ def get_csrf_token(request):
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny] # esto es para permitir cualquier usuario porque el usuario no está autenticado cuando se restablece la contraseña
     def post(self, request):
-        uid = smart_str(urlsafe_base64_decode(request.data.get('uid')))
+        uid_b64 = request.data.get('uid')
+        if not uid_b64:
+            return Response({'status': 'error', 'message': 'No se proporcionó UID'}, status=400)
+
+        uid = smart_str(urlsafe_base64_decode(uid_b64))
         token = request.data.get('token')
         password = request.data.get('password')
 
@@ -125,7 +129,18 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+        User = get_user_model()
+        # 1 valida si el usurio esta activo con su correo antes de autenticar
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Credenciales Invalidas'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if not user.is_active:
+            return Response({'error': 'La cuenta del usuario está inactiva'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        #---------------------------------
+        # 2 autentica al usuario
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
@@ -174,7 +189,7 @@ class GeneratePasswordResetLinkView(APIView):
         if user:
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))  # remove .decode()
-
+            print('uid_----____', uid)
             return Response({'uid': uid, 'token': token})  # return 'uid' and 'token' instead of 'reset_link
         else:
             return Response({'error': 'User not found'}, status=404)
@@ -201,18 +216,34 @@ class ReservaView(viewsets.ModelViewSet): # este método es para listar, crear, 
     queryset = Reserva.objects.all()
     # desativa todos los permisos
     permission_classes= [AllowAny]
+    print('--------------d')
+    
     def create(self, request, *args, **kwargs):
-        room_type = request.data.get('room_type')
-        start_date = request.data.get('start_date')
+        #validar si el el usuario esta autenticado 
+        if (request.user.is_authenticated):
+            print('autenticado')
+        token = '755604556628b7f64012b248a0063fd7d406d22e'
+       
+        user = Token.objects.get(key=token).user 
+        recepcionista = Recepcionista.objects.get(usuario=user) # Obtén el objeto Recepcionista que corresponde al User
+        habitacion_id = request.data.get('habitacion')
+        cliente_id = request.data.get('cliente')  # Obtén el ID del cliente desde la solicitud
+        start_date = request.data.get('fecha_inicio')
+        end_date = request.data.get('fecha_fin')
 
-        end_date = request.data.get('end_date')
+        habitacion = Habitacion.objects.get(id=habitacion_id)
+        cliente = Cliente.objects.get(id=cliente_id)  # Obtén el objeto Cliente usando el ID
+        room_type = habitacion.tipo
 
-        available_rooms = Habitacion.objects.filter(tipo=room_type, reserva__fecha_inicio__gte=end_date, reserva__fecha_fin__lte=start_date) # obtiene las habitaciones disponibles de un tipo específico en un rango de fechas específico
+        overlapping_reservations = Reserva.objects.filter(habitacion__tipo=room_type, fecha_inicio__lt=end_date, fecha_fin__gt=start_date)
+        available_rooms = Habitacion.objects.filter(tipo=room_type).exclude(reserva__in=overlapping_reservations)
 
         if available_rooms:
             room = available_rooms[0]
-            reserva = Reserva(habitacion=room, cliente=request.user, fecha_inicio=start_date, fecha_fin=end_date)
+            reserva = Reserva(habitacion=room, cliente=cliente, recepcionista=recepcionista, fecha_inicio=start_date, fecha_fin=end_date)  # Asigna el cliente y el recepcionista a la reserva
             reserva.save()
+            room.estado = 'ocupada'
+            room.save()
             serializer = self.get_serializer(reserva)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -246,7 +277,20 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response({'data': serializer.data, 'message': 'Usuario actualizado correctamente!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Error al actualizar el usuario', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response({'data': serializer.data, 'message': 'Usuario actualizado correctamente!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Error al actualizar el usuario', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     # Django Rest Framework proporciona los siguientes métodos para operaciones CRUD en ModelViewSet:
 
     # .list(): Para listar todos los objetos (GET)
@@ -257,3 +301,23 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
     # .destroy(): Para eliminar un objeto existente (DELETE)
     # Por lo tanto, puedes realizar operaciones CRUD en el modelo Usuario a través de esta vista.
 
+class HabitacionView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar habitaciones desde la api en React
+    serializer_class = HabitacionSerializer
+    queryset = Habitacion.objects.all()
+
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'data': serializer.data, 'message': 'Habitaciones obtenidas!'}, status=status.HTTP_200_OK)
+    def destroy(self, request, *args, **kwargs):
+    
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'message': 'Habitacion eliminada!'}, status=status.HTTP_200_OK)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            habitacion = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

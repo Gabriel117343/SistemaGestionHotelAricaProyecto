@@ -2,42 +2,65 @@
 import { Navbar } from '../pages/Navbar'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-
+import React, { useEffect } from 'react'
+import Swal from 'sweetalert2'
 export const FormEnvioCorreo = () => {
+  useEffect(() => {
+
+   
+    localStorage.removeItem('token'); // Elimina el token del localstorage
+    console.log('Borrando Token...')
+  }, [])
   const recuperarContraseña = async (event) => {
     event.preventDefault()
     const email = event.target.email.value
     console.log(email)
-    const toastId = toast.loading('Enviando link de reseteo de contraseña por email', { duration: 2000 }, { id: 'loading' })
+    const toastIdf = toast.loading('Enviando link de reseteo de contraseña por email', { id: 'loading' })
     // esto es para obtener el token csrf de la cookie
     setTimeout(async() => {
       try {
-      
+
         const response = await axios.post('http://127.0.0.1:8000/usuarios/generate_password_reset_link/', { email })
         if (response.status === 200) {
-          setTimeout(() => {
-  
-          }, 2000)
-          toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
+        
+          
           const { uid, token } = response.data
-          const reset_link = `http://localhost:5173/reset_password/${uid}/${token}/`
+          const reset_link = `http://localhost:5173/cambiar_contrasena/${uid}/${token}/`
           // Enviar el link de reseteo de contraseña por email
           
-            const res = await axios.post('http://127.0.0.1:8000/usuarios/send_password_reset_email/', { email, reset_link })
-            if (res.status === 200) {
-              
-              toast.success(res.data.message, { duration: 4000, icon: '📧' })
-            }
-  
-        } 
-        
-  
+          const res = await axios.post('http://127.0.0.1:8000/usuarios/send_password_reset_email/', { email, reset_link })
+          toast.dismiss(toastIdf, { id: 'loading' }) // cerrar el toast de cargando
+          if (res.status === 200) {
+            // mensaje personalizo sweetalert2 con exito al madar el correo con icono correo
+            Swal.fire({
+              icon: 'success',
+              title: 'Correo enviado',
+              text: 'Se ha enviado un correo con el link de reseteo de contraseña',
+              confirmButtonText: 'Ok',
+            }).then((result) => { // si el usuario le da click en ok lo redirige al login, result.isConfirmed es true si el usuario le da click en ok
+              if (result.isConfirmed) {
+                window.location.href = '/login'
+              }
+            })
+          }
+      } 
       } catch (error) {
-        toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-        toast.error('Error al enviar el email', { duration: 4000, icon: '❌' })
+        toast.dismiss(toastIdf, { id: 'loading' }) // cerrar el toast de cargando
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El correo ingresado no existe',
+          confirmButtonText: 'Ok',
+        })
+        
       }
 
-    }, 2000)
+    }, 1000)
+    
+      
+
+
     
     
   }

@@ -21,6 +21,8 @@ export const getUsuario = (id, token) => {
   })
 }
 export const createUsuario = async (usuario, token) => { // es necesario enviar la imagen como parametro para que se pueda enviar al servidor
+  console.log(usuario)
+  console.log(token)
   return usuariosApi.post('/', usuario, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -35,8 +37,15 @@ export const deleteUsuario = (id, token) => {
     }
   })
 }
-export const updateUsuario = (id, usuario) => {
-  return usuariosApi.put(`/${id}/`, usuario)
+export const updateUsuario = (id, usuario, token) => {
+  console.log(id)
+  console.log(usuario)
+  console.log(token)
+  return usuariosApi.put(`/${id}/`, usuario, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
 }
 
 

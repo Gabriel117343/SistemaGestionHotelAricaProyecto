@@ -38,18 +38,24 @@ class Administrador(models.Model):
         return self.usuario.nombre
 class Habitacion(models.Model):
     ROOM_TYPES = [
-        ('Individual', 'Individual'),
-        ('Doble', 'Doble'),
-        ('Suite', 'Suite'),
-        ('Deluxe', 'Deluxe'),
+        ('individual', 'Individual'),
+        ('doble', 'Doble'),
+        ('suite', 'Suite'),
+        ('deluxe', 'Deluxe'),
     ]
+    OCUPACION_CHOICES = [
+    (1, 'Uno'),
+    (2, 'Dos'),
+    (3, 'Tres'),
+]
     numero = models.IntegerField()
     descripcion = models.TextField(max_length=100, blank=True, null=True)
     tipo = models.CharField(choices=ROOM_TYPES, max_length=15)
-    precio = models.IntegerField()
+    precio = models.IntegerField(default=30000)
     imagen = models.ImageField(upload_to='imagenes/', null=True, blank=True)
     estado = models.CharField(max_length=15, choices=[('disponible', 'Disponible'), ('ocupada', 'Ocupada'), ('mantenimiento', 'Mantenimiento')], default='disponible')
-    camas = models.IntegerField(default=1)
+    cama = models.CharField(max_length=50, blank=True, null=True)
+    ocupacion = models.IntegerField(choices=OCUPACION_CHOICES, default=1)
     def __str__(self):
         return self.tipo
 class Cliente(models.Model):

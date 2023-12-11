@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # zona horaria santiago chile
 LANGUAGE_CODE = 'es-cl' # esto significa que el idioma es español y el pais es chile y hara que la fecha se muestre en español
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
