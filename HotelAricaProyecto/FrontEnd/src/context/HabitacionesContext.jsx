@@ -54,7 +54,7 @@ export const HabitacionesProvider = ({ children }) => {
       return { success: false, message: 'Hubo un error al eliminar la habitacion.' }
     }
   }
-  const getHabitacionSeleccionada = async (id) => {
+  const getHabitacion = async (id) => {
     const token = state.token
     try {
       const res = await getHabitacionSeleccionada(id, token)
@@ -88,7 +88,7 @@ export const HabitacionesProvider = ({ children }) => {
     getHabitaciones,
     crearHabitacion,
     eliminarHabitacion,
-    getHabitacionSeleccionada,
+    getHabitacion,
     editarHabitacion
   }}>{ children }</HabitacionesContext.Provider>
 

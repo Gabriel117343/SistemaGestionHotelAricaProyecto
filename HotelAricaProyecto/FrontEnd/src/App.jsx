@@ -53,6 +53,8 @@ function App() {
               <Route path="/admin/*" element={<AdminRoutes />} /> {/* Rutas de admin "*"" son rutas comodin */}
               <Route path="/form-envio-correo" element={<FormEnvioCorreo />} />
               <Route path="/cambiar_contrasena/:uid/:token" element={<CambiarContrasena/>} />
+
+
               
             </Routes>
             <HerramientaDesarrollo />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormRegistroUsuarios } from '../../components/admin/FormRegistroUsuarios'
+import { FormRegistroUsuarios } from '../../components/admin/FormRegistroUsuarios.jsx'
 
 export const RegistroUsuarios = () => {
 

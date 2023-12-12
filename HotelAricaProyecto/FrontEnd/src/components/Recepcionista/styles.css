@@ -1,0 +1,8 @@
+.usuario-list:hover {
+    
+    padding: 10px 15px;
+    gap: 15px;
+    transition: all 0.5s;
+    
+    border : 2px solid rgb(243, 187, 67);
+}

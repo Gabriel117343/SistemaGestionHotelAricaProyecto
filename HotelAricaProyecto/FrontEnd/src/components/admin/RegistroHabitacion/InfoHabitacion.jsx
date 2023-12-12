@@ -4,7 +4,8 @@ export const InfoHabitacion = ({infoHabitacion}) => {
   const {imagen, tipo, cama, precio, ocupacion} = infoHabitacion
   console.log(ocupacion)
   return (
-    <article className="col-md-6">
+    <section className='border rounded px-3 pt-3 mt-2 '>
+      <article className="col-md-6">
       {imagen ? 
       <img width='500px' height='280px' src={imagen} alt="imagen de habitacion" /> 
       :
@@ -44,5 +45,8 @@ export const InfoHabitacion = ({infoHabitacion}) => {
 
 
     </article>
+
+    </section>
+    
   )
 }

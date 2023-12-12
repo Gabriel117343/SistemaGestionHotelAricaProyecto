@@ -11,6 +11,8 @@ router.register(r'usuarios', views.UsuarioView, 'usuarios')
 router.register(r'reservas', views.ReservaView, 'reservas')
 #habitaciones
 router.register(r'habitaciones', views.HabitacionView, 'habitaciones')
+#clientes
+router.register(r'clientes', views.ClienteView, 'clientes')
 urlpatterns = [
     path('datos/v1/', include(router.urls)),
     path('docs/', include_docs_urls(title="Usuarios Api")),

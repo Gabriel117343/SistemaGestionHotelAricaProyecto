@@ -51,7 +51,7 @@ export const FormularioRegistroHabitacion = () => {
   return (
     <div className="row">
       <div className="col-md-6 col-ms-12">
-        <form onSubmit={EnviarFormularioRegistro}>
+        <form onSubmit={EnviarFormularioRegistro} className='m-2 border px-3 rounded'>
           <div className="form-group">
             <label htmlForm='numero'>Numero</label>
             <input type="number" className='form-control' placeholder='Ej: 233' maxLength={3} required name='numero'/>

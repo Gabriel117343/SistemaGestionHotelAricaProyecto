@@ -4,15 +4,16 @@ import Swal from 'sweetalert2'
 
 import { toast } from 'react-hot-toast'
 import { HabitacionesContext } from '../../../context/HabitacionesContext'
-import './styles.css'
+import './stylesTabla.css'
 import { Modal, Button } from 'react-bootstrap';
-import { FormularioEdicion } from './FormularioEdicion'
+import { FormularioEdicionHabitacion } from './FormularioEdicionHabitacion'
+import { has } from 'lodash'
 export const TablaHabitacionesContenedor = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [habitacionSeleccionada, setHabitacionSeleccionada] = useState(null);
   
-  const { stateHabitacion, eliminarHabitacion, getHabitacionSeleccionada, getHabitaciones, editarHabitacion } = useContext(HabitacionesContext)
+  const { stateHabitacion, eliminarHabitacion, getHabitacion, getHabitaciones, editarHabitacion } = useContext(HabitacionesContext)
   useEffect(() => {
     getHabitaciones() 
   }, [])
@@ -42,10 +43,13 @@ export const TablaHabitacionesContenedor = () => {
     }
     confirmar()
   }
+  const handleSaveChanges = () => {
+    setShowModal(false);
+  }
 
   const edicionHabitacion = async (id) => {
     // Enviara el id del usuario atravez del la url y el estado de la lista de Habitaciones
-    const habitacion = await getHabitacionSeleccionada(id)
+    const habitacion = await getHabitacion(id)
   
     // navigate(`/admin/editar/${id}`)
     setHabitacionSeleccionada(habitacion);
@@ -63,12 +67,12 @@ export const TablaHabitacionesContenedor = () => {
   
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton className='bg-info'>
-          <Modal.Title>Editar Usuario</Modal.Title>
+          <Modal.Title>Editar Habitacion</Modal.Title>
           
         </Modal.Header>
         <Modal.Body>
           {/* Aquí va tu formulario de edición. Puedes pasar usuarioSeleccionado como prop a tu formulario. */}
-          <FormularioEdicion habitacion={habitacionSeleccionada} cerrarModal={cerrarModal}/>
+          <FormularioEdicionHabitacion habitacionSeleccionada={habitacionSeleccionada} cerrarModal={cerrarModal}/>
         </Modal.Body>
       </Modal>
     </section>
