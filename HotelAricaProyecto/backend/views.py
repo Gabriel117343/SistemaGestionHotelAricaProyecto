@@ -1,7 +1,7 @@
 from cmath import e
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
-from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer
+from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer, ClienteSerializer
 from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
@@ -32,7 +32,8 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_str # para recuperar contraseña
 from django.utils.http import urlsafe_base64_decode # para recuperar contraseña
 from rest_framework.decorators import api_view
-from django.contrib.sites.shortcuts import get_current_site # para obtener el dominio actual
+from django.contrib.sites.shortcuts import get_current_site # para obtener el dominio actual http://localhost:8000
+from datetime import datetime, time # para saber la fecha actual
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
 
 #permitir 
@@ -97,7 +98,7 @@ class GetUsuarioLogeado(APIView):
         # Obtén el dominio actual
         current_site = get_current_site(request)
         domain = current_site.domain
-        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None}}, status=status.HTTP_200_OK)   
+        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email':user.email, 'id': user.id}}, status=status.HTTP_200_OK)   
 # @csrf_exempt
 # def login(request): # este método es para logearse desde la api en React
 #     if request.method == 'POST':
@@ -134,17 +135,23 @@ class LoginView(APIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({'error': 'Credenciales Invalidas'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Credenciales Invalidas', 'tipo': 'credenciales'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not user.is_active:
-            return Response({'error': 'La cuenta del usuario está inactiva'}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response({'error': 'La cuenta del usuario está inactiva', 'tipo': 'cuenta'}, status=status.HTTP_400_BAD_REQUEST)
+    
         #---------------------------------
         # 2 autentica al usuario
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, email=email, password=password) # autentica al usuario
 
         if user is not None:
-            auth_login(request, user)
+            now = datetime.now().time()  # obtén la hora actual
+            if user.jornada == 'duirno' and not (time(9, 0) <= now <= time(18, 0)):
+                return Response({'error': 'Esta cuenta esta fuera del Horario laboral', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
+            elif user.jornada == 'vespertino' and not (time(18, 0) <= now or now <= time(9, 0)):
+                return Response({'error': 'Esta cuenta esta fuera del Horario laboral', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
+                    
+            auth_login(request, user) # logea al usuario en el sistema
             try:
                 Token.objects.filter(user=user).delete()  # Elimina cualquier token existente
                 token, created = Token.objects.get_or_create(user=user)
@@ -153,9 +160,9 @@ class LoginView(APIView):
                 return Response({'error': 'Cannot create token'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             current_site = get_current_site(request) # Obteniedo el dominio actual http://localhost:8000  para que la imagen se pueda mostrar en el front End
             domain = current_site.domain
-            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None}}, status=status.HTTP_200_OK)
+            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email': user.email, 'id':user.id}}, status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'Credenciales Invalidas'}, status=status.HTTP_400_BAD_REQUEST)   
+            return Response({'error': 'Credenciales Invalidas', 'tipo': 'credenciales'}, status=status.HTTP_400_BAD_REQUEST)   
 class LogoutView(APIView):
     # solo autenticados
     
@@ -320,4 +327,39 @@ class HabitacionView(viewsets.ModelViewSet): # este método es para listar, crea
         if serializer.is_valid():
             habitacion = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales por ejemplo si se quiere actualizar solo el estado de la habitacion
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ClienteView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar clientes desde la api en React
+    serializer_class = ClienteSerializer
+    queryset = Cliente.objects.all()
+
+    permission_classes = [AllowAny] # esto es para permitir cualquier usuario porque el usuario no está autenticado cuando se crea un cliente desde la api en React
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'data': serializer.data, 'message': 'Clientes obtenidos!'}, status=status.HTTP_200_OK)
+    def destroy(self, request, *args, **kwargs):
+    
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'message': 'Cliente eliminado!'}, status=status.HTTP_200_OK)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            cliente = serializer.save()
+            return Response({'data': serializer.data, 'message': 'Cliente Agregado'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales por ejemplo si se quiere actualizar solo el estado de la habitacion
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

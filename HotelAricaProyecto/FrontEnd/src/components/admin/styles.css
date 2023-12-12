@@ -56,7 +56,7 @@ main {
 
 .contraseña-container .icon {
   position: absolute;
-  top: 55%;
+  top: 69%;
   right: 10px; /* Ajusta la posición del ícono */
   transform: translateY(-50%);
   cursor: pointer;

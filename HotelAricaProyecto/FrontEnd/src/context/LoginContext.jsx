@@ -16,29 +16,29 @@ export const LoginProvider = ({ children }) => {
   const [state, dispatch] = useReducer(LoginReducer, initialState)
   
   const iniciarSesion = async (usuario) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const res = await login(usuario)
-        console.log(res.data)
-        if (res.status === 200) {
-          const data = { token: res.data.token };
+    
+    try {
+      const res = await login(usuario)
+      console.log(res.data)
+      if (res.status === 200) {
+        const data = { token: res.data.token };
 
-          // Guarda el token en el localstorage
-          // porque cuando se recarga la pagina se pierde el estado del usuario y el token se mantiene con localstorage 
-          localStorage.setItem('token', data.token);
-          dispatch({
-            type: 'GUARDAR_USUARIO',
-            payload: res.data
-          })
-  
-          setTimeout(() => {
-            resolve({ success: true, message: res.data.message, rol: res.data.usuario.rol })
-          }, 2000)
-        }
-      } catch (error) { // error lo que hace es que si hay un error en la peticion lo que hace es que lo muestra en el toast
-        reject(new Error(error.response.data.error))
+        // Guarda el token en el localstorage
+        // porque cuando se recarga la pagina se pierde el estado del usuario y el token se mantiene con localstorage 
+        localStorage.setItem('token', data.token);
+        dispatch({
+          type: 'GUARDAR_USUARIO',
+          payload: res.data
+        })
+
+        return ({ success: true, message: res.data.message, rol: res.data.usuario.rol })
+
       }
-    })
+    } catch (error) { // error lo que hace es que si hay un error en la peticion lo que hace es que lo muestra en el toast
+      console.log(error.response.data.tipo)
+      return ({ success: false, message: error.response.data.error, tipo: error.response.data.tipo  })
+    }
+
   }
   const cerrarSesion = async () => {
     return new Promise(async (resolve, reject) => {

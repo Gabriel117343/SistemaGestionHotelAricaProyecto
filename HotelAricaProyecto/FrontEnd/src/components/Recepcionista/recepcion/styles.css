@@ -1,0 +1,6 @@
+.boton-opcion:hover {
+  background-color: rgb(243, 187, 67);
+  color: white;
+  border-radius: 10px;
+  padding: 2px 7px;
+}

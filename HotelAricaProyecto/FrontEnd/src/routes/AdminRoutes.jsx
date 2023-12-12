@@ -8,6 +8,7 @@ import { Navbar } from '../pages/Navbar'
 import { UsuariosProvider } from '../context/UsuariosContext/'
 import { UsuariosRegistrados } from '../pages/Admin/UsuariosRegistrados'
 import { HabitacionesRegistradas } from '../pages/Admin/HabitacionesRegistradas'
+import { Configuracion } from '../pages/Admin/Configuracion'
 export const AdminRoutes = () => {
 
   
@@ -19,11 +20,12 @@ export const AdminRoutes = () => {
         <Menu>
           <Routes>
             <Route path='/home' element={<Home />} />
-            <Route path='*' element={<Navigate to='home' />} />
+            <Route path='*' element={<Navigate to='/admin/home' />} />
             <Route path='/registro-usuarios' element={<RegistroUsuarios />} />
             <Route path='/registro-habitacion' element={<RegistroHabitacion />} />
             <Route path='/usuarios-registrados' element={<UsuariosRegistrados />} />
             <Route path='/habitaciones-registradas' element={<HabitacionesRegistradas />} />
+            <Route path='/configuracion' element={<Configuracion />} />
           </Routes>
 
         </Menu>

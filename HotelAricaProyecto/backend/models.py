@@ -48,7 +48,7 @@ class Habitacion(models.Model):
     (2, 'Dos'),
     (3, 'Tres'),
 ]
-    numero = models.IntegerField()
+    numero = models.IntegerField(unique=True)
     descripcion = models.TextField(max_length=100, blank=True, null=True)
     tipo = models.CharField(choices=ROOM_TYPES, max_length=15)
     precio = models.IntegerField(default=30000)

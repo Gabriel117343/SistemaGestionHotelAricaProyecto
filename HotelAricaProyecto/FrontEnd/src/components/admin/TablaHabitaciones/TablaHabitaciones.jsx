@@ -27,6 +27,7 @@ const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }
             <th>Tipo</th>
             <th>Precio</th>
             <th>Estado</th>
+            <th>Cama</th>
             <th>Capacidad</th>
             <th colSpan={2} className='text-center'>Opciones</th>
           </tr>
@@ -42,6 +43,7 @@ const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }
                 <th>{habitacion.tipo}</th>
                 <th>$ {habitacion.precio}</th>
                 <th>{habitacion.estado}</th>
+                <th>{habitacion.cama}</th>
                 <th>{habitacion.ocupacion}</th>
                 <th><button className='btn btn-sm btn-danger animacion-boton' onClick={() => borrarHabitacion(habitacion.id)}><i className='bi bi-person-x' /> Eliminar</button></th>
                 <th><button className='btn btn-sm btn-info animacion-boton' onClick={() => edicionHabitacion(habitacion.id)}>Editar <i className='bi bi-pencil text-white' /></button></th>

@@ -1,4 +1,4 @@
-import React, { useState, useId, useEffect, useContext } from 'react'
+import React, { useState, useId, useEffect, useContext, useRef } from 'react'
 import './index.css'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
@@ -19,6 +19,8 @@ export const Login = () => {
   const [mostrarContraseña, setMostrarContraseña] = useState(false)
   const idFormLogin = useId() // id para el form de login
 
+  const formLoginRef = useRef() // referencia al form de login
+
   useEffect(() => {
 
    
@@ -36,47 +38,85 @@ export const Login = () => {
     setBtnisDisabled(true)
     const usuario = Object.fromEntries(new FormData(event.target))
     const toastId = toast.loading('Cargando...', { id: 'loading' })
-    try {
-      const { success, message, rol } = await iniciarSesion(usuario)
-    
-      toast.dismiss(toastId) // cerrar el toast de cargando
-        if (success) {
-          setBtnisDisabled(false)
-          toast.success(message, { id: 'loading' })
-          setTimeout(() => {
-            if (rol === 'administrador') {
-              navigate('/admin/home')
-            } else if (rol === 'recepcionista') {
-              navigate('/recepcionista')
-            } else if (rol === 'personalaseo') {
-              navigate('/personalaseo')
-            }
+      
+      const { success, message, tipo, rol } = await iniciarSesion(usuario)
 
-          }, 1500) 
-        } else {
-          setBtnisDisabled(false)
-          toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-          toast.error(message)
-        }
-    } catch (error) {
-      setBtnisDisabled(false)
-      toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-      if (error.message === 'Credenciales Invalidas') {
-        toast.error('Email o contraseña incorrectos')
-      } else {
-        //mensaje personalizado de acceso denegado con sweetalert 2
+      // success es un booleano que indica si la peticion fue exitosa o no
+      // message es el mensaje que se muestra en el toast
+      // tipo es el tipo de error que se muestra en el toast
+      toast.dismiss(toastId) // cerrar el toast de cargando
+      if (success) {
+        console.log('asdf')
+        setBtnisDisabled(false)
+        toast.dismiss(toastId, { id: 'loading'}) // cerrar el toast de cargando
+        toast.success(message)
+        setTimeout(() => {
+          if (rol === 'administrador') {
+            toast.dismiss(toastId) // cerrar el toast de cargando
+            navigate('/admin/home')
+          } else if (rol === 'recepcionista') {
+            navigate('/recepcionista')
+          } else if (rol === 'personalaseo') {
+            navigate('/personalaseo')
+          }
+
+        }, 1500)
+
+      } else if (tipo === 'credenciales') {
+        // limpiar formulario
+        formLoginRef.current.reset()
+        toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
+        setBtnisDisabled(false)
         Swal.fire({
           icon: 'error',
-          title: 'Acceso denegado',
-          text: 'Su cuenta esta dada de baja, contacte con el administrador',
+          title: 'Credenciales Invalidas',
+          text: message,
           confirmButtonText: 'Ok',
           confirmButtonColor: '#3085d6',
         })
 
+
+      } else if (tipo === 'cuenta') {
+        // limpiar formulario
+        formLoginRef.current.reset()
+        setBtnisDisabled(false)
+        toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
+        setBtnisDisabled(false)
+        Swal.fire({
+          icon: 'error',
+          title: 'Cuenta Inactiva',
+          text: message,
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#3085d6',
+        })
+      } else if (tipo === 'horario') {
+        // limpiar formulario
+        formLoginRef.current.reset()
+        setBtnisDisabled(false)
+        toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
+        setBtnisDisabled(false)
+        Swal.fire({
+          icon: 'error',
+          title: 'Restriccion de Horario',
+          text: message,
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#3085d6',
+        })
+      } else {
+        // limpiar formulario
+        formLoginRef.current.reset()
+        setBtnisDisabled(false)
+        toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
+        setBtnisDisabled(false)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al iniciar sesion',
+          text: 'Hubo un error al iniciar sesion, porfavor intentelo de nuevo.',
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#3085d6',
+        })
       }
-      
     }
-  }
   
   // Activa o desactivar la visualizacion de la contraseña atravez del estado anterior
   const estadoContraseña = () => {
@@ -99,7 +139,7 @@ export const Login = () => {
                     <p className="text-white-50 pt-2">Porfavor inicia sesion!</p>
                   </div>
                   
-                  <form onSubmit={enviarFormLogin} id={idFormLogin}>
+                  <form onSubmit={enviarFormLogin} id={idFormLogin} ref={formLoginRef}>
                     <div className="form-outline form-white mb-4">
                       <input
                         type="email"

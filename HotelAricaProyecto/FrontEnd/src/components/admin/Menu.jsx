@@ -36,6 +36,13 @@ export const Menu = ({ children }) => {
       path:'/admin/habitaciones-registradas',
       name:'Tabla Habitaciones',
       icon: <i class="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
+    },
+    {
+      path:'/admin/configuracion/',
+      name: 'Configuracion',
+      icon: <i class="bi bi-gear"></i>
+
+
     }
   ]
   return (
@@ -49,13 +56,13 @@ export const Menu = ({ children }) => {
             <div className='d-flex align-items-center gap-3 pb-3 ps-2'>
               { state && state.usuario ? (
                 <>
-                  <img width='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src={state.usuario.imagen ? state.usuario.imagen : 'https://cdn-icons-png.flaticon.com/512/6073/6073873.png'} />
+                  <img width='50px' height='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src={state.usuario.imagen ? state.usuario.imagen : 'https://cdn-icons-png.flaticon.com/512/6073/6073873.png'} />
                   <strong className='nombre-usuario'>{state.usuario.nombre}</strong> 
                 </>
               ):
               (
                 <>
-                  <img width='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src='https://cdn-icons-png.flaticon.com/512/6073/6073873.png' />
+                  <img width='50px' height='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src='https://cdn-icons-png.flaticon.com/512/6073/6073873.png' />
                   <strong>Sin Nombre</strong>
                 </>
               )

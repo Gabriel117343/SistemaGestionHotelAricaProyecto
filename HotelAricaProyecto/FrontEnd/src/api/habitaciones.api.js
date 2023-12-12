@@ -36,8 +36,10 @@ export const deleteHabitacion = (id, token) => {
   })
 }
 export const updateHabitacion = (id, habitacion, token) => {
+
   return habitacionesApi.put(`/${id}/`, habitacion, {
     headers: {
+      'Content-Type': 'multipart/form-data', // para que se pueda enviar la imagen hay que decir que es un formulario new FormData()
       Authorization: `Token ${token}`
     }
   })

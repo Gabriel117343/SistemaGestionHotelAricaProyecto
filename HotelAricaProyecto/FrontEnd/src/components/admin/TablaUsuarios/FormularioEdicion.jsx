@@ -15,7 +15,7 @@ import { UsuariosContext } from '../../../context/UsuariosContext'
 
 export const FormularioEdicion = ({ cerrarModal }) => {
   // Accediendo al valor :id de la ruta /editar/<id>, id del usuario a buscar
-  const params = useParams()
+
 
   const [isBtnDisabled, setIsBtnDisabled] = useState(true)
   
