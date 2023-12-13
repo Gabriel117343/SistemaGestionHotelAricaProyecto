@@ -50,6 +50,7 @@ export const Login = () => {
       // success es un booleano que indica si la peticion fue exitosa o no
       // message es el mensaje que se muestra en el toast
       // tipo es el tipo de error que se muestra en el toast
+   
       toast.dismiss(toastId) // cerrar el toast de cargando
       if (success) {
         console.log('asdf')

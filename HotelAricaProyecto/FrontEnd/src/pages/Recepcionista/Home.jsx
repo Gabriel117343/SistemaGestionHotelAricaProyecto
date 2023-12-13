@@ -19,6 +19,7 @@ export const Home = () => {
           <div style={{fontSize: '40px'}} className='d-flex align-items-center p-0 m-0'>
             <FaHome />
           </div>
+          
           <h1 className='m-0'>Principal</h1>
 
         </div>
