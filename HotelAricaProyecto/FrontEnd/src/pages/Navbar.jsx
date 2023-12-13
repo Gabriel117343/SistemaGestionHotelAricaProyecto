@@ -84,7 +84,7 @@ export const Navbar = () => {
             <div className='d-flex align-items-center'>   
                        
               <Link className='link' to='/login'>Login</Link>
-              <i class="bi bi-box-arrow-right text-white px-2"></i>
+              <i className="bi bi-box-arrow-right text-white px-2"></i>
             </div>
           
           

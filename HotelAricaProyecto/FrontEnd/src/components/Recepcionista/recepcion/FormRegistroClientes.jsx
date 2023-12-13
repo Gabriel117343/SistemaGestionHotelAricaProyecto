@@ -1,19 +1,22 @@
 
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import { ClienteContext } from '../../../context/ClientesContext'
 import { toast } from 'react-hot-toast'
-export const FormRegistroClientes = () => {
+export const FormRegistroClientes = ({cambiarOpcion}) => {
   const { crearCliente } = useContext(ClienteContext)
-
+  const formRef = useRef()
   const enviarFormulario = async(event) => {
     event.preventDefault()
     const formCliente = new FormData(event.target)
     const toastId = toast.loading('Registrando...', { id: 'loading' })
     const { success, message } = await crearCliente(formCliente)
     if (success) {
+      formRef.current.reset()
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
       toast.success(message)
+      cambiarOpcion()
     } else {
+      formRef.current.reset()
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
       toast.error(message)
     }
@@ -21,7 +24,7 @@ export const FormRegistroClientes = () => {
 
   }
   return (
-    <form action="" onSubmit={enviarFormulario}>
+    <form action="" onSubmit={enviarFormulario} ref={formRef} className='border px-2 pt-3 pb-5 mt-1'>
       <div className="row">
         
         <div className="col-md-6">

@@ -4,7 +4,8 @@ import { FaBars, FaHome, FaUserPlus, FaUsers } from "react-icons/fa"
 import { AiFillBank } from "react-icons/ai"
 import { NavLink } from 'react-router-dom';
 import { LoginContext } from '../../context/LoginContext'
-import { HabitacionesProvider } from '../../context/HabitacionesContext'
+import { HabitacionProvider } from '../../context/HabitacionContext'
+import { ReservaProvider } from '../../context/ReservaContext'
 import './styles.css'
 export const Menu = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true)
@@ -22,6 +23,11 @@ export const Menu = ({ children }) => {
       name:'Recepcion',
       icon: <AiFillBank />, // icono de la pagina web https://boxicons.com/
     },
+    {
+      path:'/recepcionista/reservas',
+      name:'Reservas',
+      icon: <i class="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
+    }
  
   ]
   return (
@@ -70,9 +76,12 @@ export const Menu = ({ children }) => {
           }
         </div>
       </div>
-      <HabitacionesProvider> {/* Este componente es para que se pueda usar el context en todos los componentes que esten dentro de este componente */}
-        <main>{ children }</main> 
-      </HabitacionesProvider>
+        <ReservaProvider>
+          <HabitacionProvider> {/* Este componente es para que se pueda usar el context en todos los componentes que esten dentro de este componente */}
+            <main>{ children }</main> 
+          </HabitacionProvider>
+        </ReservaProvider>
+        
       
     </div>
   )

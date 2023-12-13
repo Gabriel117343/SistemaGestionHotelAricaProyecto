@@ -1,6 +1,15 @@
+
+
 .boton-opcion:hover {
-  background-color: rgb(243, 187, 67);
+  background-color: rgb(241, 206, 129);
   color: white;
   border-radius: 10px;
-  padding: 2px 7px;
+  
+}
+
+.boton-opcion:focus {
+  background-color: rgb(241, 206, 129);
+  color: white;
+  border-radius: 10px;
+  
 }

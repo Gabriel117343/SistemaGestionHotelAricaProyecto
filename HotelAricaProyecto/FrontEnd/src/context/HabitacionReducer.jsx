@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const HabitacionesReducer = (stateHabitacion, action) => {
+export const HabitacionReducer = (stateHabitacion, action) => {
   
   const { type, payload } = action // destructurin de action
   

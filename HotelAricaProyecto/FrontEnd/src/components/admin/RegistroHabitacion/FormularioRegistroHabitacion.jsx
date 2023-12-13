@@ -1,7 +1,7 @@
 import { debounce } from 'lodash'
 import React, { useState, useContext } from 'react'
 import { InfoHabitacion } from './InfoHabitacion'
-import { HabitacionesContext } from '../../../context/HabitacionesContext'
+import { HabitacionContext } from '../../../context/HabitacionContext'
 import { toast } from 'react-hot-toast'
 export const FormularioRegistroHabitacion = () => {
   const [infoHabitacion, setInfoHabitacion] = useState({
@@ -11,7 +11,7 @@ export const FormularioRegistroHabitacion = () => {
     precio: 40000,
     ocupacion: '2 personas'
   })
-  const { crearHabitacion } = useContext(HabitacionesContext) 
+  const { crearHabitacion } = useContext(HabitacionContext) 
 
 
   const setInfoHabitacionDebounce = debounce(setInfoHabitacion, 1000)

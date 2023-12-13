@@ -65,7 +65,7 @@ class Cliente(models.Model):
 
     nombre = models.CharField(max_length=50, blank=True, null=True)
     apellido = models.CharField(max_length=50, blank=True, null=True)
-    rut = models.CharField(max_length=13, blank=True, null=True)
+    rut = models.CharField(unique=True, max_length=13, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=50, blank=True, null=True)
     # otros campos específicos del cliente aquí

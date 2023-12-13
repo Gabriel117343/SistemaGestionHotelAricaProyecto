@@ -14,6 +14,7 @@ export const LoginProvider = ({ children }) => {
     isAuth: false
   }
   const [state, dispatch] = useReducer(LoginReducer, initialState)
+
   
   const iniciarSesion = async (usuario) => {
     
