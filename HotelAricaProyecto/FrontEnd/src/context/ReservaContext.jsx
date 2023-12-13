@@ -14,7 +14,7 @@ export const ReservaProvider = ({ children }) => {
   }
   const [stateReserva, dispatch] = useReducer(ReservaReducer, initialState)
 
-
+ 
   const registrarReserva = async (reserva) => {
     const token = state.token
     try {
