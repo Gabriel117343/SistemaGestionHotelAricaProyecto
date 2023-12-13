@@ -34,6 +34,8 @@ from django.utils.http import urlsafe_base64_decode # para recuperar contraseña
 from rest_framework.decorators import api_view
 from django.contrib.sites.shortcuts import get_current_site # para obtener el dominio actual http://localhost:8000
 from datetime import datetime, time # para saber la fecha actual
+
+from rest_framework.permissions import IsAuthenticated
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
 
 #permitir 
@@ -165,7 +167,7 @@ class LoginView(APIView):
             return Response({'error': 'Credenciales Invalidas', 'tipo': 'credenciales'}, status=status.HTTP_400_BAD_REQUEST)   
 class LogoutView(APIView):
     # solo autenticados
-    
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
     def post(self, request):
         # Elimina el token del usuario
@@ -218,7 +220,7 @@ class SendPasswordResetEmailView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-class ReservaView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar reservas desde la api en React
+class vs(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar reservas desde la api en React
     serializer_class = ReservaSerializer
     queryset = Reserva.objects.all()
     # desativa todos los permisos
@@ -254,7 +256,45 @@ class ReservaView(viewsets.ModelViewSet): # este método es para listar, crear, 
             serializer = self.get_serializer(reserva)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({'message': 'No hay habitaciones disponibles de ese tipo en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'No hay habitaciones disponibles de ese tipo en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST)
+class ReservaView(viewsets.ModelViewSet):
+    serializer_class = ReservaSerializer
+    queryset = Reserva.objects.all()
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+
+    def create(self, request, *args, **kwargs):
+        if (request.user.is_authenticated):
+            print('autenticado')
+    
+        userId = request.data.get('usuario')
+        recepcionista = Recepcionista.objects.get(usuario=userId)
+        room_type = request.data.get('tipo')  # Obtén el tipo de habitación desde la solicitud
+        cliente_id = request.data.get('cliente')
+        start_date = request.data.get('fecha_inicio')
+        end_date = request.data.get('fecha_fin')
+
+        cliente = Cliente.objects.get(id=cliente_id)
+        overlapping_reservations = Reserva.objects.filter(habitacion__tipo=room_type, fecha_inicio__lt=end_date, fecha_fin__gt=start_date)
+        available_rooms = Habitacion.objects.filter(tipo=room_type).exclude(reserva__in=overlapping_reservations)
+
+        if available_rooms:
+            room = available_rooms[0]
+            reserva = Reserva(habitacion=room, cliente=cliente, recepcionista=recepcionista, fecha_inicio=start_date, fecha_fin=end_date)
+            reserva.save()
+            room.estado = 'ocupada'
+            room.save()
+            serializer = self.get_serializer(reserva)
+            return Response({'message': 'Se ha hecho la reserva con exito', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'No hay habitaciones disponibles de ese tipo en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST) 
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Reservas obtenidas!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+
 class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar usuarios desde la api en React
     serializer_class = UsuarioSerializer #Esto indica que UsuarioSerializer se utilizará para serializar y deserializar instancias del modelo Usuario.
     queryset = Usuario.objects.all() # Esto indica que todas las instancias del modelo Usuario son el conjunto de datos sobre el que operará esta vista.
@@ -284,6 +324,11 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # obtener desde el ultimo usuario creado hasta el primero
+    def get(self, request, *args, **kwargs):
+        queryset = Usuario.objects.all().order_by('-id')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'data': serializer.data, 'message': 'Usuarios obtenidos!'}, status=status.HTTP_200_OK)
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales
@@ -363,3 +408,4 @@ class ClienteView(viewsets.ModelViewSet): # este método es para listar, crear, 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   

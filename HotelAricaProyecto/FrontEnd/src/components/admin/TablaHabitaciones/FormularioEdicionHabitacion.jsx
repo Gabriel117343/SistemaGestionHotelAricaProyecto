@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import { HabitacionesContext } from '../../../context/HabitacionesContext'
+import { HabitacionContext } from '../../../context/HabitacionContext'
 import { toast } from 'react-hot-toast'
 export const FormularioEdicionHabitacion = ({ cerrarModal }) => {
-  const { stateHabitacion, editarHabitacion } = useContext(HabitacionesContext)
+  const { stateHabitacion, editarHabitacion } = useContext(HabitacionContext)
   
 
   const enviarFormularioRegistro = async(event) => {

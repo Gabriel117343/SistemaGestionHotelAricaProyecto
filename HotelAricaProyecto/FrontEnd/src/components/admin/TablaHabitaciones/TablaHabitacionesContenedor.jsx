@@ -3,7 +3,7 @@ import { ValidarHabitaciones } from './TablaHabitaciones'
 import Swal from 'sweetalert2'
 
 import { toast } from 'react-hot-toast'
-import { HabitacionesContext } from '../../../context/HabitacionesContext'
+import { HabitacionContext } from '../../../context/HabitacionContext'
 import './stylesTabla.css'
 import { Modal, Button } from 'react-bootstrap';
 import { FormularioEdicionHabitacion } from './FormularioEdicionHabitacion'
@@ -13,7 +13,7 @@ export const TablaHabitacionesContenedor = () => {
   const [showModal, setShowModal] = useState(false);
   const [habitacionSeleccionada, setHabitacionSeleccionada] = useState(null);
   
-  const { stateHabitacion, eliminarHabitacion, getHabitacion, getHabitaciones, editarHabitacion } = useContext(HabitacionesContext)
+  const { stateHabitacion, eliminarHabitacion, getHabitacion, getHabitaciones, editarHabitacion } = useContext(HabitacionContext)
   useEffect(() => {
     getHabitaciones() 
   }, [])

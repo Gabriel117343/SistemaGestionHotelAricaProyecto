@@ -1,68 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { ClienteContext } from '../../context/ClientesContext'
-import ListGroup from 'react-bootstrap/ListGroup'
-import { MagicMotion } from 'react-magic-motion'
-import './styles.css'
-export const TablaClientes = () => {
-
-  const { getClientes, stateClientes, obtenerCliente } = useContext(ClienteContext)
-  const [mostrarInfo, setMostrarInfo] = useState(false)
-
-  useEffect (() => {
-    getClientes()
-  }, [])
-
-  // lista de clientes to to list no una tabla, lista para poder seleccionar un cliente utilizando listGroup que cambie de color al seleccionar y que se pueda seleccionar
-  const seleccionarCliente = async(id) => {
-    const { success, message } = await obtenerCliente(id)
-    if (success){
-      console.log('exito')
-    } else {
-      console.log('error')
-    }
-    setMostrarInfo(true)
-
-  }
-  const cambiarVentana = () => {
-    setMostrarInfo(false)
-
-  }
-  return (
-    mostrarInfo ?
-    <InformacionCliente cambiarVentana={cambiarVentana}/>
-    :
-    
-    <MostrarTabla clientes={stateClientes.clientes} seleccionarCliente={seleccionarCliente}/>
-  )
-  
-
-}
-export const MostrarTabla = ({clientes, seleccionarCliente }) => {
-  console.log(clientes)
-  return (
-    <div>
-      <strong className='ms-1'>Nombre</strong>
-      <ListGroup className='estilo-list'>
-
-        {clientes.map((cliente) => (
-          <ListGroup.Item className='usuario-list' key={cliente._id} action onClick={() => seleccionarCliente(cliente.id)} style={{margin: '2px'}}>
-            {cliente.nombre} {cliente.apellido}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>    
-    </div>
-
-  )
-
-}
+import { useContext } from 'react'
+import { ClienteContext } from '../../../context/ClientesContext'
 export const InformacionCliente = ({cambiarVentana}) => {
   console.log('sdf')
   const { stateClientes } = useContext(ClienteContext)
-  console.log(stateClientes.clienteSeleccionado)
+
   // retorna informacion del cliente
   return (
     <section className='border px-3 pt-2 pb-5 mt-3 rounded'>
-      <h1 className='text-center'>Informacion</h1>
+      <h1 className='text-center'>Cliente</h1>
       <form>
         <div className="row">
           <div className="col-md-6">
@@ -99,7 +44,7 @@ export const InformacionCliente = ({cambiarVentana}) => {
           </div>
         </div>
         <div className="pt-4">
-          <button className='form-control btn btn-info' onClick={cambiarVentana}>Volver</button>
+          <button className='form-control btn btn-info' onClick={cambiarVentana}>Seleccionar otro</button>
 
         </div>
       

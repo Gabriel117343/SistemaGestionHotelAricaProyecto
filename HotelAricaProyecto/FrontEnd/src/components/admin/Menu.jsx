@@ -4,7 +4,7 @@ import { FaBars, FaHome, FaUserPlus, FaUsers } from "react-icons/fa";
 import { IoIosBed } from "react-icons/io";
 import { NavLink } from 'react-router-dom';
 import { LoginContext } from '../../context/LoginContext'
-import { HabitacionesProvider } from '../../context/HabitacionesContext'
+import { HabitacionProvider } from '../../context/HabitacionContext'
 import './styles.css'
 export const Menu = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true)
@@ -91,9 +91,9 @@ export const Menu = ({ children }) => {
           }
         </div>
       </div>
-      <HabitacionesProvider> {/* Este componente es para que se pueda usar el context en todos los componentes que esten dentro de este componente */}
+      <HabitacionProvider> {/* Este componente es para que se pueda usar el context en todos los componentes que esten dentro de este componente */}
         <main>{ children }</main> 
-      </HabitacionesProvider>
+      </HabitacionProvider>
       
     </div>
   )

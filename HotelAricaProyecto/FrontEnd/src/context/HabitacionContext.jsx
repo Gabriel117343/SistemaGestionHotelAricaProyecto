@@ -1,16 +1,16 @@
 import React,{ createContext, useReducer, useContext } from 'react'
 import { LoginContext } from './LoginContext'
 import { getAllHabitaciones, createHabitacion, deleteHabitacion, getHabitacionSeleccionada, updateHabitacion } from '../api/habitaciones.api'
-import { HabitacionesReducer } from './HabitacionesReducer'
-export const HabitacionesContext = createContext()
-export const HabitacionesProvider = ({ children }) => {
+import { HabitacionReducer } from './HabitacionReducer'
+export const HabitacionContext = createContext()
+export const HabitacionProvider = ({ children }) => {
       
   const { state } = useContext(LoginContext) // se obtiene el token del usuario
   const initialState = {
     habitaciones: [],  // eseto es  una lista de habitaciones
     habitacionSeleccionada: null, // es la habitacion que se selecciona
   }
-  const [stateHabitacion, dispatch] = useReducer(HabitacionesReducer, initialState)
+  const [stateHabitacion, dispatch] = useReducer(HabitacionReducer, initialState)
 
   const getHabitaciones = async () => {
     try {
@@ -83,13 +83,13 @@ export const HabitacionesProvider = ({ children }) => {
 
 
 
-  return <HabitacionesContext.Provider value={{
+  return <HabitacionContext.Provider value={{
     stateHabitacion,
     getHabitaciones,
     crearHabitacion,
     eliminarHabitacion,
     getHabitacion,
     editarHabitacion
-  }}>{ children }</HabitacionesContext.Provider>
+  }}>{ children }</HabitacionContext.Provider>
 
 }

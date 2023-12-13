@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 
 export const Login = () => {
 
-  const { cerrarSesion, iniciarSesion } = useContext(LoginContext) 
+  const { cerrarSesion, iniciarSesion, state } = useContext(LoginContext) 
   const [btnisDisabled, setBtnisDisabled] = useState(false)
   const [mostrarContraseña, setMostrarContraseña] = useState(false)
   const idFormLogin = useId() // id para el form de login
@@ -22,11 +22,17 @@ export const Login = () => {
   const formLoginRef = useRef() // referencia al form de login
 
   useEffect(() => {
-
-   
-    localStorage.removeItem('token'); // Elimina el token del localstorage
-    cerrarSesion() // Elimina el token del estado global
-    console.log('Borrando Token...')
+    async function cerrar () {
+      if (state.isAuth) {
+        console.log('Borrando Token...')
+        await cerrarSesion() // Elimina el token del estado global
+        localStorage.removeItem('token'); // Elimina el token del localstorage
+      } else {
+        return
+        
+      }
+    }
+    cerrar()
   }, [])
  
 

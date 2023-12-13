@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { set } from 'lodash'
+import { useState, useRef } from 'react'
 import { MagicMotion } from 'react-magic-motion'
 
 export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) => {
   // Definir el estado para manejar la página actual, por defecto se mostrara la pagina 1 de la tabla
   const [currentPage, setCurrentPage] = useState(1)
+
   // Se define la cantidad de usuarios a mostrar por pagina
   const cantidadUsuarios = 10
   // Calculando el índice de inicio y fin de la lista actual en función de la página actual y los elementos por página
@@ -12,6 +14,7 @@ export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) =
   // Obtener los elementos a mostrar en la página actual, slice filtrara el inicio a fin
 
   const usuariosMostrar = listaPersonas.slice(startIndex, endIndex)
+  
   // Servira para calcular el número total de páginas en función de la cantidad total de elementos y los elementos por página ej: el boton 1, 2, 3 etc..
   const totalBotones = Math.ceil(listaPersonas.reverse().length / cantidadUsuarios)// reverse para que la tabla muestre desde el ultimo usuario creado al primero
 

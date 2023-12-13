@@ -63,7 +63,7 @@ export const ClienteProvider = ({children}) => {
         type: 'GET_CLIENTE',
         payload: res.data
       })
-      return { success: true, message: res.data.message }
+      return { success: true, message: 'Cliente Obtenido', 'cliente': res.data }
     } catch (error) {
       return { success: false, message: 'Hubo un error al obtener el cliente.' }
     }

@@ -1,9 +1,9 @@
 
 import React, { useContext, useEffect }from 'react'
-import { HabitacionesContext } from '../../../context/HabitacionesContext'
+import { HabitacionContext } from '../../../context/HabitacionContext'
 export const InfoHabitaciones = () => {
 
-  const { stateHabitacion, getHabitaciones } = useContext(HabitacionesContext)
+  const { stateHabitacion, getHabitaciones } = useContext(HabitacionContext)
   useEffect(() => {
     getHabitaciones()
   }, [])
@@ -16,7 +16,7 @@ export const InfoHabitaciones = () => {
  }
 
 export const ConHabitaciones = ({ habitaciones }) => {
-  console.log(habitaciones.re)
+
   
   const habitacionesDisponibles = habitaciones.filter((habitacion) => habitacion.estado === 'disponible')
   const habitacionesOcupadas = habitaciones.filter((habitacion) => habitacion.estado === 'ocupada').length
