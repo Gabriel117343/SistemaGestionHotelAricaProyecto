@@ -35,12 +35,12 @@ export const Menu = ({ children }) => {
     {
       path:'/admin/habitaciones-registradas',
       name:'Tabla Habitaciones',
-      icon: <i class="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
+      icon: <i className="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
     },
     {
       path:'/admin/configuracion/',
       name: 'Configuracion',
-      icon: <i class="bi bi-gear"></i>
+      icon: <i className="bi bi-gear"></i>
 
 
     }

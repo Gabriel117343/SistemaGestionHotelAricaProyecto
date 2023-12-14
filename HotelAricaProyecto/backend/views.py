@@ -17,6 +17,7 @@ from .serializer import UsuarioSerializer
 from rest_framework import status
 from rest_framework.response import Response
 import json
+import os # para eliminar la imagen anterior cuando se actualiza la imagen de un usuario
 
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
@@ -222,43 +223,7 @@ class SendPasswordResetEmailView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-class vs(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar reservas desde la api en React
-    serializer_class = ReservaSerializer
-    queryset = Reserva.objects.all()
-    # desativa todos los permisos
-    permission_classes= [AllowAny]
-    print('--------------d')
-    
-    def create(self, request, *args, **kwargs):
-        #validar si el el usuario esta autenticado 
-        if (request.user.is_authenticated):
-            print('autenticado')
-        token = '755604556628b7f64012b248a0063fd7d406d22e'
-       
-        user = Token.objects.get(key=token).user 
-        recepcionista = Recepcionista.objects.get(usuario=user) # Obtén el objeto Recepcionista que corresponde al User
-        habitacion_id = request.data.get('habitacion')
-        cliente_id = request.data.get('cliente')  # Obtén el ID del cliente desde la solicitud
-        start_date = request.data.get('fecha_inicio')
-        end_date = request.data.get('fecha_fin')
 
-        habitacion = Habitacion.objects.get(id=habitacion_id)
-        cliente = Cliente.objects.get(id=cliente_id)  # Obtén el objeto Cliente usando el ID
-        room_type = habitacion.tipo
-
-        overlapping_reservations = Reserva.objects.filter(habitacion__tipo=room_type, fecha_inicio__lt=end_date, fecha_fin__gt=start_date)
-        available_rooms = Habitacion.objects.filter(tipo=room_type).exclude(reserva__in=overlapping_reservations)
-
-        if available_rooms:
-            room = available_rooms[0]
-            reserva = Reserva(habitacion=room, cliente=cliente, recepcionista=recepcionista, fecha_inicio=start_date, fecha_fin=end_date)  # Asigna el cliente y el recepcionista a la reserva
-            reserva.save()
-            room.estado = 'ocupada'
-            room.save()
-            serializer = self.get_serializer(reserva)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'error': 'No hay habitaciones disponibles de ese tipo en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST)
 class ReservaView(viewsets.ModelViewSet):
     serializer_class = ReservaSerializer
     queryset = Reserva.objects.all()
@@ -308,8 +273,13 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
         return Response({'data': serializer.data, 'message': 'Usuarios obtenidos!'}, status=status.HTTP_200_OK)
     def destroy(self, request, *args, **kwargs):
     
-        instance = self.get_object()
-        self.perform_destroy(instance)
+        instance = self.get_object() # Obtiene la instancia del usuario através del id
+        image_path = os.path.join(settings.MEDIA_ROOT, instance.imagen.path)  # Guarda la ruta de la imagen
+        self.perform_destroy(instance) # Elimina el usuario
+        # Si la imagen existe se borrar para que no quede en el servidor
+        if os.path.isfile(image_path):
+            os.remove(image_path)
+
         return Response({'message': 'Usuario eliminado!'}, status=status.HTTP_200_OK)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -326,25 +296,26 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # obtener desde el ultimo usuario creado hasta el primero
+    
     def get(self, request, *args, **kwargs):
         queryset = Usuario.objects.all().order_by('-id')
         serializer = self.get_serializer(queryset, many=True)
         return Response({'data': serializer.data, 'message': 'Usuarios obtenidos!'}, status=status.HTTP_200_OK)
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+        old_image = instance.imagen  # Guarda la referencia a la imagen anterior
+
         serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales
         if serializer.is_valid():
-            self.perform_update(serializer)
+            self.perform_update(serializer) # Actualiza el usuario
+
+            # Si la imagen ha cambiado, borra la imagen anterior
+            if old_image != instance.imagen:
+                os.remove(os.path.join(settings.MEDIA_ROOT, old_image.path))
+
             return Response({'data': serializer.data, 'message': 'Usuario actualizado correctamente!'}, status=status.HTTP_200_OK)
         return Response({'message': 'Error al actualizar el usuario', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        if serializer.is_valid():
-            self.perform_update(serializer)
-            return Response({'data': serializer.data, 'message': 'Usuario actualizado correctamente!'}, status=status.HTTP_200_OK)
-        return Response({'message': 'Error al actualizar el usuario', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
     # Django Rest Framework proporciona los siguientes métodos para operaciones CRUD en ModelViewSet:
 
     # .list(): Para listar todos los objetos (GET)
@@ -365,16 +336,33 @@ class HabitacionView(viewsets.ModelViewSet): # este método es para listar, crea
         serializer = self.get_serializer(queryset, many=True)
         return Response({'data': serializer.data, 'message': 'Habitaciones obtenidas!'}, status=status.HTTP_200_OK)
     def destroy(self, request, *args, **kwargs):
-    
         instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({'message': 'Habitacion eliminada!'}, status=status.HTTP_200_OK)
+        try:
+            if instance.estado == 'ocupada':
+                return Response({'error': 'No se puede eliminar una habitación ocupada'}, status=status.HTTP_400_BAD_REQUEST)
+            if instance.estado == 'mantenimiento':
+                return Response({'error': 'No se puede eliminar una habitación en mantenimiento'}, status=status.HTTP_400_BAD_REQUEST)
+            image_path = None
+            if instance.imagen:
+                image_path = os.path.join(settings.MEDIA_ROOT, instance.imagen.path)  # Guarda la ruta de la imagen
+
+            self.perform_destroy(instance)
+
+            # Si la imagen existe se borrara
+            if image_path and os.path.isfile(image_path):
+                os.remove(image_path)
+            return Response({'message': 'Habitacion eliminada!'}, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+
+         
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             habitacion = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'Se ha añadido la Habitacion','response':serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'error': 'No se ha podido añadir la Habitcion'}, status=status.HTTP_400_BAD_REQUEST)
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales por ejemplo si se quiere actualizar solo el estado de la habitacion

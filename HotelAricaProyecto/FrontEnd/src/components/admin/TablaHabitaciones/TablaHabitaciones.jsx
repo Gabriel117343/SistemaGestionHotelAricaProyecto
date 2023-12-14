@@ -37,16 +37,16 @@ const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }
           <MagicMotion transition={{ type: "spring", stiffness: 500, damping: 15 }}>
             {habitacionesMostrar.map(habitacion => (
               <tr key={habitacion.id}>
-                <th>{contador++}</th>
-                <th><img width='50px' height='50px' className='habitacion-imagen' src={habitacion.imagen ? habitacion.imagen : 'https://elcomercio.pe/resizer/pfr9uvs5EojbKKmnLQfL27eiT4w=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/JLLIVKJJOBAFJCW7FPOYTICIBQ.jpg'} alt='imagen' /></th>
-                <th>{habitacion.numero}</th>
-                <th>{habitacion.tipo}</th>
-                <th>$ {habitacion.precio}</th>
-                <th>{habitacion.estado}</th>
-                <th>{habitacion.cama}</th>
-                <th>{habitacion.ocupacion}</th>
-                <th><button className='btn btn-sm btn-danger animacion-boton' onClick={() => borrarHabitacion(habitacion.id)}><i className='bi bi-person-x' /> Eliminar</button></th>
-                <th><button className='btn btn-sm btn-info animacion-boton' onClick={() => edicionHabitacion(habitacion.id)}>Editar <i className='bi bi-pencil text-white' /></button></th>
+                <td>{contador++}</td>
+                <td><img width='50px' height='50px' className='habitacion-imagen' src={habitacion.imagen ? habitacion.imagen : 'https://elcomercio.pe/resizer/pfr9uvs5EojbKKmnLQfL27eiT4w=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/JLLIVKJJOBAFJCW7FPOYTICIBQ.jpg'} alt='imagen' /></td>
+                <td>{habitacion.numero}</td>
+                <td>{habitacion.tipo}</td>
+                <td>$ {habitacion.precio}</td>
+                <td>{habitacion.estado}</td>
+                <td>{habitacion.cama}</td>
+                <td>{habitacion.ocupacion}</td>
+                <td><button className='btn btn-sm btn-danger animacion-boton' onClick={() => borrarHabitacion(habitacion.id)}><i className='bi bi-person-x' /> Eliminar</button></td>
+                <td><button className='btn btn-sm btn-info animacion-boton' onClick={() => edicionHabitacion(habitacion.id)}>Editar <i className='bi bi-pencil text-white' /></button></td>
               </tr>
             ))}
 
@@ -87,14 +87,18 @@ const SinHabitaciones = () => {
 
         </thead>
         <tbody>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
-          <th>-</th>
+          <tr>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+
+          </tr>
+          
         </tbody>
       </table>
       <h1 className='text-center pt-5'>No hay habitaciones Registradas</h1>

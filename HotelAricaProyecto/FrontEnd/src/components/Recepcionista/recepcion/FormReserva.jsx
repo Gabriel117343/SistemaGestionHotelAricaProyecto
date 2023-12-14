@@ -75,7 +75,7 @@ export const FormReserva = () => {
       </div>
         
       <form action="" className='mx-2' onSubmit={enviarFormulario}>
-      <div className="row border px-3 rounded mt-1 pb-5 pt-2 mt-3">
+      <div className="row border px-3 rounded mt-1 pb-5 pt-2 mt-2">
         <h1>Reserva</h1>
       
       

@@ -36,22 +36,28 @@ export const HabitacionProvider = ({ children }) => {
         type: 'CREATE_HABITACION',
         payload: res.data
       })
-      return { success: true, message: 'Habitacion creada!' }
+      return { success: true, message: res.data.message }
     } catch (error) {
-      return { success: false, message: 'Hubo un error al crear la habitacion.' }
+      return { success: false, message: error.response.data.error }
     }
   }
   const eliminarHabitacion = async (id) => {
+
     const token = state.token
     try {
       const res = await deleteHabitacion(id, token)
+
       dispatch({
         type: 'DELETE_HABITACION',
         payload: id
       })
+      if (res.status === 200) {
+        
+      }
       return { success: true, message: res.data.message }
     } catch (error) {
-      return { success: false, message: 'Hubo un error al eliminar la habitacion.' }
+      console.log(error.response.data.error)
+      return { success: false, message: error.response.data.error }
     }
   }
   const getHabitacion = async (id) => {
