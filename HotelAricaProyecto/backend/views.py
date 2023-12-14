@@ -146,9 +146,9 @@ class LoginView(APIView):
         # 1 valida si el usuario esta dentro del horario laboral
         now = datetime.now().time()  # obtén la hora actual
         if user.jornada == 'duirno' and not (time(9, 0) <= now <= time(18, 0)):
-            return Response({'error': 'Esta cuenta esta fuera del Horario laboral', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Esta cuenta esta fuera del Horario laboral, contacte con el Administrador', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
         elif user.jornada == 'vespertino' and not (time(18, 0) <= now or now <= time(9, 0)):
-            return Response({'error': 'Esta cuenta esta fuera del Horario laboral', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Esta cuenta esta fuera del Horario laboral, contacte con el Administrador', 'tipo': 'horario'}, status=status.HTTP_400_BAD_REQUEST)
         #---------------------------------
         # 2 autentica al usuario  
         user = authenticate(request, email=email, password=password) # autentica al usuario
