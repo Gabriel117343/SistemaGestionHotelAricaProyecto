@@ -95,7 +95,7 @@ export const CambiarImagenPerfil = () => {
               <form id={formImagenId} onSubmit={cambiarImagenPerfil} ref={formImagenRef}>
                 <div className="mb-3">
                   <label for="formFile" className="form-label">Nueva imagen de Perfil</label>
-                  <input onChange={handleFileChange} className="form-control" type="file" name='imagen'/>
+                  <input onChange={handleFileChange} className="form-control" type="file" name='imagen' required/>
                 </div>
                 <div className="mb-3">
                   <button className="btn btn-primary">Guardar</button>

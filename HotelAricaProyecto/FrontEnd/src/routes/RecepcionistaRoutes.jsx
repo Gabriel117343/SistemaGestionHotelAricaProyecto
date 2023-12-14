@@ -7,6 +7,7 @@ import { Menu } from '../components/Recepcionista/Menu'
 import { Recepcion } from '../pages/Recepcionista/Recepcion'
 import { ClienteProvider } from '../context/ClientesContext'
 import { Reservas } from '../pages/Recepcionista/Reservas'
+import { Configuracion } from '../pages/Recepcionista/Configuracion'
 export const RecepcionistaRoutes = () => {
   return (
     <ClienteProvider>
@@ -17,6 +18,7 @@ export const RecepcionistaRoutes = () => {
           <Route path='*' element={<Navigate to='/recepcionista/home' />} />
           <Route path='/recepcion' element={<Recepcion />} />
           <Route path='/reservas' element={<Reservas />} />
+          <Route path='/configuracion' element={<Configuracion />} />
 
         </Routes>
       </Menu>
