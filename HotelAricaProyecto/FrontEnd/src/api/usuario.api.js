@@ -43,6 +43,7 @@ export const updateUsuario = (id, usuario, token) => {
   console.log(token)
   return usuariosApi.put(`/${id}/`, usuario, {
     headers: {
+      'Content-Type': 'multipart/form-data',
       Authorization: `Token ${token}`
     }
   })

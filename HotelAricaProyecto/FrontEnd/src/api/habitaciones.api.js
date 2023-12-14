@@ -29,7 +29,8 @@ export const createHabitacion = async (habitacion, token) => {
   })
 }
 export const deleteHabitacion = (id, token) => {
-  return habitacionesApi.delete(`/${id}`, {
+ 
+  return habitacionesApi.delete(`/${id}/`, {
     headers: {
       Authorization: `Token ${token}`
     }

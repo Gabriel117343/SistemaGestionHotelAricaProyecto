@@ -7,7 +7,7 @@ import { HabitacionContext } from '../../../context/HabitacionContext'
 import './stylesTabla.css'
 import { Modal, Button } from 'react-bootstrap';
 import { FormularioEdicionHabitacion } from './FormularioEdicionHabitacion'
-import { has } from 'lodash'
+import swal from 'sweetalert2'
 export const TablaHabitacionesContenedor = () => {
 
   const [showModal, setShowModal] = useState(false);
@@ -34,19 +34,25 @@ export const TablaHabitacionesContenedor = () => {
         setTimeout(async () => {
           const { success, message } = await eliminarHabitacion(id)
           if (success) {
-            toast.success(message)
+            swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: message,
+              confirmButtonText: 'Ok',
+            })
           } else {
-            toast.error(message)
+            swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: message,
+              confirmButtonText: 'Ok',
+            })
           }
         }, 2000)
       }
     }
     confirmar()
   }
-  const handleSaveChanges = () => {
-    setShowModal(false);
-  }
-
   const edicionHabitacion = async (id) => {
     // Enviara el id del usuario atravez del la url y el estado de la lista de Habitaciones
     const habitacion = await getHabitacion(id)

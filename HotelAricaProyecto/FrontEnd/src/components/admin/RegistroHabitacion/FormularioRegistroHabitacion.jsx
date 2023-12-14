@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react'
 import { InfoHabitacion } from './InfoHabitacion'
 import { HabitacionContext } from '../../../context/HabitacionContext'
 import { toast } from 'react-hot-toast'
+import swal from 'sweetalert2'
 export const FormularioRegistroHabitacion = () => {
   const [infoHabitacion, setInfoHabitacion] = useState({
     imagen: '',
@@ -33,12 +34,23 @@ export const FormularioRegistroHabitacion = () => {
       const { success, message } = await crearHabitacion(formHabitaciones)
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
       if (success) {
-        console.log(message)
-        toast.success(message)
-        // toast.success(message)
+        swal.fire({
+          icon: 'success',
+          title: 'Habitacion creada',
+          text: message,
+          confirmButtonText: 'Ok',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/admin/habitaciones-registradas'
+          }
+        })
       } else {
-        console.log(message)
-        // toast.error(message)
+        swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: message,
+          confirmButtonText: 'Ok',
+        })
       }
     } catch (error) {
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
