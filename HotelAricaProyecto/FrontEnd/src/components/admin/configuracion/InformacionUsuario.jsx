@@ -23,9 +23,9 @@ export const InformacionUsuario = ({usuario, usuarioImagen}) => {
           <h2>{usuario?.nombre}</h2>
           <div className="d-flex gap-2 pt-3">
             <strong>Rol:</strong>
-            {usuario?.rol === 'administrador' ? 
+            {usuario?.rol  ? 
             (
-              <p>Administrador</p>
+              <p>{usuario.rol}</p>
             )
             :
             (

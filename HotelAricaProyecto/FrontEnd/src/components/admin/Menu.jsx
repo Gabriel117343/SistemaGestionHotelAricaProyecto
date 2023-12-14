@@ -41,8 +41,6 @@ export const Menu = ({ children }) => {
       path:'/admin/configuracion/',
       name: 'Configuracion',
       icon: <i className="bi bi-gear"></i>
-
-
     }
   ]
   return (

@@ -27,6 +27,11 @@ export const Menu = ({ children }) => {
       path:'/recepcionista/reservas',
       name:'Reservas',
       icon: <i class="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
+    },
+    {
+      path:'/recepcionista/configuracion/',
+      name: 'Configuracion',
+      icon: <i className="bi bi-gear"></i>
     }
  
   ]
