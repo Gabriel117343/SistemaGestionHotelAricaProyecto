@@ -232,7 +232,6 @@ class ReservaView(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if (request.user.is_authenticated):
             print('autenticado')
-    
         userId = request.data.get('usuario') # Obtener el id del usuario que hizo la reserva
         recepcionista = Recepcionista.objects.get(usuario=userId)
         room_id = request.data.get('habitacion')  # Obtener el Id de la habitacion
@@ -328,15 +327,17 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
         serializer = self.get_serializer(queryset, many=True)
         return Response({'data': serializer.data, 'message': 'Usuarios obtenidos!'}, status=status.HTTP_200_OK)
     def destroy(self, request, *args, **kwargs):
-    
-        instance = self.get_object() # Obtiene la instancia del usuario através del id
-        image_path = os.path.join(settings.MEDIA_ROOT, instance.imagen.path)  # Guarda la ruta de la imagen
-        self.perform_destroy(instance) # Elimina el usuario
-        # Si la imagen existe se borrar para que no quede en el servidor
-        if os.path.isfile(image_path):
-            os.remove(image_path)
-
+        instance = self.get_object()
+        if instance.imagen and hasattr(instance.imagen, 'path'):
+            image_path = os.path.join(settings.MEDIA_ROOT, instance.imagen.path)  # Guarda la ruta de la imagen
+            self.perform_destroy(instance) # Elimina el usuario
+            # Si la imagen existe se borrar para que no quede en el servidor
+            if os.path.isfile(image_path):
+                os.remove(image_path)
+        else:
+            self.perform_destroy(instance) # Elimina el usuario si no tiene imagen
         return Response({'message': 'Usuario eliminado!'}, status=status.HTTP_200_OK)
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
