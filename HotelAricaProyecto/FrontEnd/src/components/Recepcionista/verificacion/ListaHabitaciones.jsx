@@ -15,7 +15,7 @@ export const ListaHabitaciones = () => {
     await getHabitacion(id)
     console.log(stateHabitacion.habitacionSeleccionada)
   }
-  const habitacionesNoDisponibles = stateHabitacion.habitaciones.filter((habitacion) => habitacion.estado !== 'disponible')
+  const habitacionesNoDisponibles = stateHabitacion.habitaciones.filter((habitacion) => habitacion.estado !== 'disponible' && habitacion.estado !== 'mantenimiento')
 
   return (
     <>
