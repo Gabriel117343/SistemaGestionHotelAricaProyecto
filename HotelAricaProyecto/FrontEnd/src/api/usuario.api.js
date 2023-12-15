@@ -45,7 +45,8 @@ export const updateUsuario = (id, usuario, token) => {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Token ${token}`
-    }vfvc
+    }
+  })
 }
 
 
