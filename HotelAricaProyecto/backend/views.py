@@ -366,8 +366,8 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
         if serializer.is_valid():
             self.perform_update(serializer) # Actualiza el usuario
 
-            # Si la imagen ha cambiado, borra la imagen anterior
-            if old_image != instance.imagen:
+            # Si la imagen ha cambiado y la imagen antigua existe, borra la imagen anterior
+            if old_image != instance.imagen and old_image and hasattr(old_image, 'path'):
                 os.remove(os.path.join(settings.MEDIA_ROOT, old_image.path))
 
             return Response({'data': serializer.data, 'message': 'Usuario actualizado correctamente!'}, status=status.HTTP_200_OK)
