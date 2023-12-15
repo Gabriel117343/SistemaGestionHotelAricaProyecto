@@ -86,6 +86,11 @@ export const HabitacionProvider = ({ children }) => {
       return { success: false, message: 'Hubo un error al actualizar la habitacion.' }
     }
   }
+  const limpiarHabitacionSeleccionada = () => {
+    dispatch({
+      type: 'LIMPIAR_HABITACION_SELECCIONADA'
+    })
+  }
 
 
 
@@ -95,7 +100,8 @@ export const HabitacionProvider = ({ children }) => {
     crearHabitacion,
     eliminarHabitacion,
     getHabitacion,
-    editarHabitacion
+    editarHabitacion,
+    limpiarHabitacionSeleccionada
   }}>{ children }</HabitacionContext.Provider>
 
 }

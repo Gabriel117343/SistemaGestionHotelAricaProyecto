@@ -54,7 +54,7 @@ export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) =
                 <th>{person.apellido}</th>
                 <th>{person.telefono}</th>
                 <th>{person.email}</th>{/** Aqui se asignara un icono dependiendo del estado de la persona, por horario y si esta activo */}
-                <th>{person.rol}</th>
+                <th className='text-capitalize'>{person.rol}</th>
                 <th className='text-center animacion-i'>{person.jornada === 'duirno' ? (<i className='bi bi-sun text-warning' />) : (<i className='bi bi-moon text-info' />)}</th>
                 <th className='text-center animacion-i'>{person.is_active === true ? (<i className='bi bi-building-fill-up text-success' />) : (<i className='bi bi-building-fill-slash text-danger' />)}</th>
                 <th><button className='btn btn-sm btn-danger animacion-boton' onClick={() => borrarPersona(person.id)}><i className='bi bi-person-x' /> Eliminar</button></th>

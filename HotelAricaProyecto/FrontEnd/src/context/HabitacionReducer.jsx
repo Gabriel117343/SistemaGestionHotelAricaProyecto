@@ -31,6 +31,11 @@ export const HabitacionReducer = (stateHabitacion, action) => {
         ...stateHabitacion,
         habitaciones: stateHabitacion.habitaciones.map((habitacion) => habitacion.id === payload.id ? payload : habitacion)
       }
+    case 'LIMPIAR_HABITACION_SELECCIONADA':
+      return {
+        ...stateHabitacion,
+        habitacionSeleccionada: null
+      }
     default:
       return state
   }

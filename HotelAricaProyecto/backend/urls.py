@@ -4,15 +4,21 @@ from rest_framework import routers
 from backend import views
 from .views import *
 from django.contrib.auth import views as auth_views
-router = routers.DefaultRouter() # tiene el crud de los usuarios"""
+router = routers.DefaultRouter() # esto permite que se puedan ver las rutas en el navegador
 #usuarios
 router.register(r'usuarios', views.UsuarioView, 'usuarios')
-#reservas
+#reservas - ESTO PODRIA SER CONSIDERADO MAS COMO EL CHECKIN PORQUE ES EL INGRESO DE UNA RESERVA
 router.register(r'reservas', views.ReservaView, 'reservas')
 #habitaciones
+# FALTA ENTONCES PARA HACER RESERVAS 
 router.register(r'habitaciones', views.HabitacionView, 'habitaciones')
 #clientes
 router.register(r'clientes', views.ClienteView, 'clientes')
+#checkout
+router.register(r'checkout', views.CheckoutView, basename='checkout')
+#checkin
+
+router.register(r'checkin', views.CheckinView, basename='checkin')
 urlpatterns = [
     path('datos/v1/', include(router.urls)),
     path('docs/', include_docs_urls(title="Usuarios Api")),
@@ -23,5 +29,7 @@ urlpatterns = [
     path('generate_password_reset_link/', GeneratePasswordResetLinkView.as_view()),
     path('send_password_reset_email/',  SendPasswordResetEmailView.as_view()),
     path('reset_password/', ResetPasswordView.as_view()),
+    path('calculate_cost/', views.CostCalculator.as_view()),
+  
 
 ]

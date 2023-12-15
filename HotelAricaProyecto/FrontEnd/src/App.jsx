@@ -15,6 +15,7 @@ import { FormEnvioCorreo } from './pages/FormEnvioCorreo'
 import { CambiarContrasena } from './pages/CambiarContrasena'
 import { CargaDePagina } from './views/CargaDePagina'
 
+
 function App() {
   const { obtenerUsuarioLogeado, state } = useContext(LoginContext)
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,7 @@ function App() {
               <Route path="/recepcionista/*" element={<RecepcionistaRoutes />} />
               <Route path="/admin/*" element={<AdminRoutes />} /> {/* Rutas de admin "*"" son rutas comodin */}
               <Route path="/form-envio-correo" element={<FormEnvioCorreo />} />
+          
               <Route path="/cambiar_contrasena/:uid/:token" element={<CambiarContrasena/>} />
 
 

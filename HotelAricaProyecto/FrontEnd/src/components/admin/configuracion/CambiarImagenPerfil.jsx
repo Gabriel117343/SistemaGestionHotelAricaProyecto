@@ -89,7 +89,7 @@ export const CambiarImagenPerfil = () => {
       <div className="col-md-6">
         <div className="column">
           <div className="col-md-12">
-            <div className="card">
+            <div className="card card-diseño">
             <div className="card-body">
               <h2>Cambiar imagen de perfil</h2>
               <form id={formImagenId} onSubmit={cambiarImagenPerfil} ref={formImagenRef}>
@@ -106,7 +106,7 @@ export const CambiarImagenPerfil = () => {
 
           </div>
           <div className="col-md-12 mt-3">
-            <div className="card">
+            <div className="card card-diseño">
               <div className="card-body">
                 <form className={formContraseñaId} onSubmit={cambiarContraseña} ref={formContraseñaRef}>
                   <h2>Cambiar contraseña</h2>
