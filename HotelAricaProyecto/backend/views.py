@@ -101,7 +101,7 @@ class GetUsuarioLogeado(APIView):
         # Obtén el dominio actual
         current_site = get_current_site(request)
         domain = current_site.domain
-        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email':user.email, 'id': user.id}}, status=status.HTTP_200_OK)   
+        return Response({'token': token, 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'apellido': user.apellido, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email':user.email, 'id': user.id}}, status=status.HTTP_200_OK)   
 # @csrf_exempt
 # def login(request): # este método es para logearse desde la api en React
 #     if request.method == 'POST':
@@ -165,7 +165,7 @@ class LoginView(APIView):
                 return Response({'error': 'Cannot create token'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             current_site = get_current_site(request) # Obteniedo el dominio actual http://localhost:8000  para que la imagen se pueda mostrar en el front End
             domain = current_site.domain
-            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email': user.email, 'id':user.id}}, status=status.HTTP_200_OK)
+            return Response({'token': token.key,'message': 'Se ha logeado Exitosamente', 'usuario':{'nombre':user.nombre, 'rol': user.rol, 'apellido': user.apellido, 'jornada':user.jornada, 'imagen': f'http://{domain}{user.imagen.url}' if user.imagen else None, 'email': user.email, 'id':user.id}}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales Invalidas', 'tipo': 'credenciales'}, status=status.HTTP_400_BAD_REQUEST)   
 class LogoutView(APIView):
@@ -233,27 +233,31 @@ class ReservaView(viewsets.ModelViewSet):
         if (request.user.is_authenticated):
             print('autenticado')
     
-        userId = request.data.get('usuario')
+        userId = request.data.get('usuario') # Obtener el id del usuario que hizo la reserva
         recepcionista = Recepcionista.objects.get(usuario=userId)
-        room_type = request.data.get('tipo')  # Obtén el tipo de habitación desde la solicitud
-        cliente_id = request.data.get('cliente')
+        room_id = request.data.get('habitacion')  # Obtener el Id de la habitacion
+        cliente_id = request.data.get('cliente') # Obtener el id del cliente
         start_date = request.data.get('fecha_inicio')
         end_date = request.data.get('fecha_fin')
 
         cliente = Cliente.objects.get(id=cliente_id)
-        overlapping_reservations = Reserva.objects.filter(habitacion__tipo=room_type, fecha_inicio__lt=end_date, fecha_fin__gt=start_date)
-        available_rooms = Habitacion.objects.filter(tipo=room_type).exclude(reserva__in=overlapping_reservations)
+        overlapping_reservations = Reserva.objects.filter(habitacion__tipo=room_id, fecha_inicio__lt=end_date, fecha_fin__gt=start_date) # Obtener las reservas que se sobreponen en el tiempo
+        room = Habitacion.objects.get(id=room_id) # Obtener la habitacion
 
-        if available_rooms:
-            room = available_rooms[0]
+        cantidad_clientes = int(request.data.get('ocupacion')) # Obtener la cantidad de clientes
+        # si la habitacion es individual y la cantidad de clientes es mayor a 1, no se puede hacer la reserva
+        if cantidad_clientes > room.ocupacion:
+            return Response({'error': 'La habitación seleccionada no puede albergar a esa cantidad de clientes, seleccione otra porfavor.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not overlapping_reservations: # Si no hay reservas que se sobrepongan en el tiempo, se puede hacer la reserva
             reserva = Reserva(habitacion=room, cliente=cliente, recepcionista=recepcionista, fecha_inicio=start_date, fecha_fin=end_date)
+            reserva.estado = 'en curso'
             reserva.save()
             room.estado = 'ocupada'
             room.save()
             serializer = self.get_serializer(reserva)
             return Response({'message': 'Se ha hecho la reserva con exito', 'data': serializer.data}, status=status.HTTP_201_CREATED)
         else:
-            return Response({'error': 'No hay habitaciones disponibles de ese tipo en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST) 
+            return Response({'error': 'La habitación seleccionada ya está reservada en las fechas seleccionadas.'}, status=status.HTTP_400_BAD_REQUEST)
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
@@ -261,7 +265,59 @@ class ReservaView(viewsets.ModelViewSet):
             return Response({'data': serializer.data, 'message': 'Reservas obtenidas!'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class CheckinView(viewsets.ViewSet):
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
 
+    def create(self, request, *args, **kwargs):
+    
+        reserva_id = request.data.get('reserva')  # Obtener el ID de la reserva
+
+        try:
+            reserva = Reserva.objects.get(id=reserva_id)  # Obtener la reserva
+        except Reserva.DoesNotExist:
+            return Response({'error': 'No se encontró la reserva con el ID proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if reserva.fecha_inicio <= datetime.now().date():  # Si la fecha de inicio de la reserva es hoy o ya pasó
+            reserva.habitacion.estado = 'ocupada'  # Actualizar el estado de la habitación a 'ocupada'
+            reserva.habitacion.save()  # Guardar los cambios en la habitación
+
+            reserva.estado = 'en curso'  # Actualizar el estado de la reserva a 'en curso'
+            reserva.save()  # Guardar los cambios en la reserva
+
+            return Response({'message': 'Se ha hecho el check-in con éxito'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No se puede hacer el check-in antes de la fecha de inicio de la reserva.'}, status=status.HTTP_400_BAD_REQUEST)      
+class CostCalculator(APIView):
+    def post(self, request, *args, **kwargs):
+        reserva_id = request.data.get('reserva')  # Obtener el ID de la reserva
+        reserva = Reserva.objects.get(id=reserva_id)  # Obtener la reserva
+
+        # Calcular el costo total
+        days_stayed = (reserva.fecha_fin - reserva.fecha_inicio).days
+        total_cost = days_stayed * reserva.habitacion.precio
+
+        return Response({'total_cost': total_cost})
+class CheckoutView(viewsets.ViewSet):
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+
+    def create(self, request, *args, **kwargs):
+        if (request.user.is_authenticated):
+            print('autenticado')
+
+        reserva_id = request.data.get('reserva')  # Obtener el ID de la reserva
+        reserva = Reserva.objects.get(id=reserva_id)  # Obtener la reserva
+
+        if reserva.fecha_fin < datetime.now().date():  # Si la fecha de fin de la reserva es anterior a la fecha actual
+            reserva.habitacion.estado = 'limpieza'  # Actualizar el estado de la habitación a limpieza 
+            reserva.habitacion.save()  # Guardar los cambios en la habitación
+
+            # Calcular el costo total
+            total_cost = CostCalculator.calculate_total_cost(reserva)
+
+            return Response({'message': 'Se ha hecho el checkout con éxito', 'total_cost': total_cost}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No se puede hacer el checkout antes de la fecha de fin de la reserva.'}, status=status.HTTP_400_BAD_REQUEST)
 class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar usuarios desde la api en React
     serializer_class = UsuarioSerializer #Esto indica que UsuarioSerializer se utilizará para serializar y deserializar instancias del modelo Usuario.
     queryset = Usuario.objects.all() # Esto indica que todas las instancias del modelo Usuario son el conjunto de datos sobre el que operará esta vista.
@@ -363,12 +419,21 @@ class HabitacionView(viewsets.ModelViewSet): # este método es para listar, crea
             habitacion = serializer.save()
             return Response({'message':'Se ha añadido la Habitacion','response':serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'error': 'No se ha podido añadir la Habitcion'}, status=status.HTTP_400_BAD_REQUEST)
-    def partial_update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales por ejemplo si se quiere actualizar solo el estado de la habitacion
+        old_estado = instance.estado  # Guarda la referencia al estado anterior después de guardar los cambios
+        serializer = self.get_serializer(instance, data=request.data, partial=True)  # partial=True para permitir actualizaciones parciales por ejemplo si se quiere actualizar solo el estado de la habitacion
+
         if serializer.is_valid():
             serializer.save()
+            
+            print('Estado')
+            print(old_estado)
+            if old_estado == 'ocupada' or old_estado == 'mantenimiento':
+                Reserva.objects.filter(habitacion=instance).delete()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClienteView(viewsets.ModelViewSet): # este método es para listar, crear, actualizar y eliminar clientes desde la api en React

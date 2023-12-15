@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react'
-import { createReserva, getAllReservas } from '../api/reserva.api/'
+import { createReserva, getAllReservas, getReserva } from '../api/reserva.api/'
 import { ReservaReducer } from './ReservaReducer'
 import { LoginContext } from './LoginContext'
 export const ReservaContext = createContext()
@@ -49,8 +49,24 @@ export const ReservaProvider = ({ children }) => {
       throw error.response.data.error;
     }
   }
+  const getReserva = async (id) => {
+    const token = state.token
+    try {
+      const res = await getReserva(id, token)
+
+      dispatch({
+        type: 'GET_RESERVA',
+        payload: res.data
+      })
+      return { success: true, message: 'Reserva obtenida!' }
+
+    } catch (error) {
+      return { success: false, message: 'Hubo un error al obtener la reserva.' }
+    }
+  
+  }
   return (
-    <ReservaContext.Provider value={{ stateReserva, registrarReserva, getReservas }}>
+    <ReservaContext.Provider value={{ stateReserva, registrarReserva, getReservas, getReserva }}>
       {children}
     </ReservaContext.Provider>
   )

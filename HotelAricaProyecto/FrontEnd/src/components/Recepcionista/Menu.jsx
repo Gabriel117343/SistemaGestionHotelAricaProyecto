@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { MdDoorBack } from "react-icons/md";
 
 import { FaBars, FaHome, FaUserPlus, FaUsers } from "react-icons/fa"
 import { AiFillBank } from "react-icons/ai"
@@ -29,10 +30,16 @@ export const Menu = ({ children }) => {
       icon: <i class="bi bi-table"></i>, // icono de la pagina web https://boxicons.com/
     },
     {
+      path:'/recepcionista/verificacion_salida/',
+      name: 'Verificacion de salida',
+      icon: <MdDoorBack />
+    },
+    {
       path:'/recepcionista/configuracion/',
       name: 'Configuracion',
       icon: <i className="bi bi-gear"></i>
-    }
+    },
+    
  
   ]
   return (
@@ -47,7 +54,7 @@ export const Menu = ({ children }) => {
               { state && state.usuario ? (
                 <>
                   <img width='50px' height='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src={state.usuario.imagen ? state.usuario.imagen : 'https://cdn-icons-png.flaticon.com/512/6073/6073873.png'} />
-                  <strong className='nombre-usuario'>{state.usuario.nombre}</strong> 
+                  <strong className='nombre-usuario'>{state.usuario.nombre} {state.usuario.apellido}</strong> 
                 </>
               ):
               (

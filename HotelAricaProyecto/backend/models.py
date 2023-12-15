@@ -73,9 +73,17 @@ class Cliente(models.Model):
     def __str__(self):
         return '{0} - {1}'.format(self.nombre, self.apellido)
 class Reserva(models.Model):
+    ESTADOS = (
+        ('pendiente', 'Pendiente'),
+        ('confirmada', 'Confirmada'),
+        ('en curso', 'En curso'),
+        ('completada', 'Completada'),
+        ('cancelada', 'Cancelada'),
+    )
     habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     recepcionista = models.ForeignKey(Recepcionista, on_delete=models.SET_NULL, null=True)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default='pendiente')  # Nuevo campo de estado
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
     # otros campos aquí

@@ -132,7 +132,7 @@ export const Login = () => {
   
   return (
     <section className="gradient-custom">
-      <div className="container py-5">
+      <div className="container py-5" style={{height: '100vh'}}>
         <div className="row d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
             <div className="card bg-dark text-white" style={{ borderRadius: '1rem' }}>
@@ -173,7 +173,7 @@ export const Login = () => {
                     </div>
                     <p  className="small mb-3 pb-lg-2"><Link to='/form-envio-correo' className="text-white-50">Olvidaste tu contraseña?</Link></p>
                     
-                    <button type='submit' className="btn form-control btn-outline-light btn-lg px-5" disabled={btnisDisabled}>Login</button>
+                    <button type='submit' className="btn form-control btn-outline-light btn-lg px-5 mb-3" disabled={btnisDisabled}>Login</button>
                   </form>
                   
                 </div>

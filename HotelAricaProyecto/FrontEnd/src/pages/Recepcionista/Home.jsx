@@ -11,8 +11,6 @@ export const Home = () => {
  
   return (
     <>
-      
-
   
       <section className='container'>
         <div className="d-flex align-items-center justify-content-left gap-3  pt-4">

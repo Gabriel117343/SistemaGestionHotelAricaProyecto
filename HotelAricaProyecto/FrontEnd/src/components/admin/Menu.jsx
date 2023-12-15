@@ -55,7 +55,7 @@ export const Menu = ({ children }) => {
               { state && state.usuario ? (
                 <>
                   <img width='50px' height='50px' style={{display: isOpen ? "block": "none", borderRadius: '30px'}} className="logo " src={state.usuario.imagen ? state.usuario.imagen : 'https://cdn-icons-png.flaticon.com/512/6073/6073873.png'} />
-                  <strong className='nombre-usuario'>{state.usuario.nombre}</strong> 
+                  <strong className='nombre-usuario'>{state.usuario.nombre} {state.usuario.apellido}</strong> 
                 </>
               ):
               (

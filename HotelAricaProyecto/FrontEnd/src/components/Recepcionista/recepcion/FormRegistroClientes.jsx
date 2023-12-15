@@ -20,11 +20,9 @@ export const FormRegistroClientes = ({cambiarOpcion}) => {
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
       toast.error(message)
     }
-
-
   }
   return (
-    <form action="" onSubmit={enviarFormulario} ref={formRef} className='border px-2 pt-3 pb-5 mt-1'>
+    <form action="" onSubmit={enviarFormulario} ref={formRef} className='border px-2 pt-3 pb-5 mt-1 rounded'>
       <div className="row">
         
         <div className="col-md-6">
@@ -59,8 +57,7 @@ export const FormRegistroClientes = ({cambiarOpcion}) => {
 
         </div>
         <div className="col-12 col-md-6">
-          
-      
+
         </div>
         <div className="col-12 mt-3">
           <button className="btn btn-success" type="submit">Registrar</button>

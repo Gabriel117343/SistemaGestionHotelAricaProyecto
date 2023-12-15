@@ -1,6 +1,7 @@
 
 import React, { useContext, useEffect }from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
+import './styles.css'
 export const InfoHabitaciones = () => {
 
   const { stateHabitacion, getHabitaciones } = useContext(HabitacionContext)
@@ -24,13 +25,13 @@ export const ConHabitaciones = ({ habitaciones }) => {
   const cantidadHabitaciones = habitaciones.length
 
   return (
-    <section className='d-flex'>
+    <section className='d-flex pt-3'>
       <div className="col-md-3">
-        <div className="card text-white bg-primary mb-3" style={{maxWidth: '18rem'}}>
+        <div className="card text-white bg-primary mb-3 tamaño-card" style={{maxWidth: '18rem'}}>
           <div className="card-header">Habitaciones disponibles</div>
           <div className="card-body">
-            <h5 className="card-title">{habitacionesDisponibles.length}</h5>
-            <p className="card-text">Total</p>
+            <h4 className="card-title">{habitacionesDisponibles.length}</h4>
+            <p className='pt-3'>Total</p>
           </div>
         </div>
       </div>
@@ -38,8 +39,8 @@ export const ConHabitaciones = ({ habitaciones }) => {
         <div className="card text-white bg-success mb-3" style={{maxWidth: '18rem'}}>
           <div className="card-header">Habitaciones ocupadas</div>
           <div className="card-body">
-            <h5 className="card-title">{habitacionesOcupadas}</h5>
-            <p className="card-text">Total</p>
+            <h4 className="card-title">{habitacionesOcupadas}</h4>
+            <p className='pt-3'>Total</p>
           </div>
         </div>
         
@@ -48,8 +49,8 @@ export const ConHabitaciones = ({ habitaciones }) => {
         <div className="card text-white bg-danger mb-3" style={{maxWidth: '18rem'}}>
           <div className="card-header">Habitaciones en mantenimiento</div>
           <div className="card-body">
-            <h5 className="card-title">{habitacionesMantenimiento.length}</h5>
-            <p className="card-text">Total</p>
+            <h4 className="card-title">{habitacionesMantenimiento.length}</h4>
+            <p className='pt-3'>Total</p>
           </div>
         </div>
       </div>
@@ -57,8 +58,8 @@ export const ConHabitaciones = ({ habitaciones }) => {
         <div className="card text-white bg-warning mb-3" style={{maxWidth: '18rem'}}>
           <div className="card-header">Total de habitaciones</div>
           <div className="card-body">
-            <h5 className="card-title">{cantidadHabitaciones}</h5>
-            <p className="card-text">Total</p>
+            <h4 className="card-title">{cantidadHabitaciones}</h4>
+            <p className='pt-3'>Total</p>
           </div>
         </div>
       </div>

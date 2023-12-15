@@ -2,14 +2,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ReservaContext } from '../../../context/ReservaContext'
 import { ClienteContext } from '../../../context/ClientesContext'
 import { LoginContext } from '../../../context/LoginContext'
+import { HabitacionContext } from '../../../context/HabitacionContext'
 import toast from 'react-hot-toast'
 import swal from 'sweetalert2'
-export const FormReserva = () => {
+export const FormCheckin = () => {
 
   const { stateReserva, registrarReserva } = useContext(ReservaContext)
   const { stateClientes } = useContext(ClienteContext)
   const { state } = useContext(LoginContext)
-  
+  const { stateHabitacion } = useContext(HabitacionContext)
+
+  const [total, setTotal] = useState(0); // Nuevo estado para el total
+  const [fechaInicio, setFechaInicio] = useState(null); // Nuevo estado para la fecha de inicio
+  const [fechaFin, setFechaFin] = useState(null); // Nuevo estado para la fecha de fin
   const enviarFormulario = async(event) => {
     event.preventDefault()
     const form = new FormData(event.target)
@@ -21,8 +26,10 @@ export const FormReserva = () => {
         confirmButtonText: 'Ok',
       })
     }
-    form.append('cliente', stateClientes.clienteSeleccionado.id)
-    form.append('usuario', state.usuario.id)
+
+    form.append('habitacion', stateHabitacion.habitacionSeleccionada.id) // se agrega el id de la habitacion seleccionada al form data
+    form.append('cliente', stateClientes.clienteSeleccionado.id) // se agrega el id del cliente seleccionado al form data
+    form.append('usuario', state.usuario.id) // se agrega el id del usuario al form data
     const datos = Object.fromEntries(form)
     console.log(datos)
     const toastId = toast.loading('Registrando...', { id: 'loading' })
@@ -52,8 +59,33 @@ export const FormReserva = () => {
     }
 
   }
+  const calcularTotal = (fechaInicio, fechaFin, precioPorDia) => {
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+    const diferenciaEnMilisegundos = Math.abs(fin - inicio);
+    const diferenciaEnDias = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+    setTotal(diferenciaEnDias * precioPorDia);
+  }
+  const handleFechaInicioChange = (event) => {
+    setFechaInicio(event.target.value);
+    if (fechaFin) {
+      calcularTotal(event.target.value, fechaFin, stateHabitacion.habitacionSeleccionada.precio);
+    }
+  }
+
+  const handleFechaFinChange = (event) => {
+    setFechaFin(event.target.value);
+    if (fechaInicio) {
+      calcularTotal(fechaInicio, event.target.value, stateHabitacion.habitacionSeleccionada.precio);
+    }
+  }
   return (
-    <section>
+    <>
+
+
+      <div className="row">
+        
+      </div>
       <div className="d-flex gap-1">
         <div className="d-flex col-md-6">
 
@@ -74,33 +106,22 @@ export const FormReserva = () => {
         
       </div>
         
-      <form action="" className='mx-2' onSubmit={enviarFormulario}>
-      <div className="row border px-3 rounded mt-1 pb-5 pt-2 mt-2">
-        <h1>Reserva</h1>
+      <form action="" className='mx-2 mt-1' onSubmit={enviarFormulario}>
+      <div className="row border px-3 rounded mt-1 pb-5 pt-2">
+        <h1>Procesar Checkin</h1>
       
       
         
         <div className="col-md-12">
           <div className="form-group">
             <label htmlFor="">Fecha de entrada</label>
-            <input type="date" className="form-control" placeholder="Fecha de entrada" name='fecha_inicio' required />
+            <input type="date" className="form-control" placeholder="Fecha de entrada" name='fecha_inicio' onChange={handleFechaInicioChange} required />
           </div>
           </div>
           <div className="col-md-12">
             <div className="form-group">
               <label htmlFor="">Fecha de salida</label>
-              <input type="date" className="form-control" placeholder="Fecha de salida" name='fecha_fin' required/>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="form-group">
-              <label htmlFor="tipo">Tipo de habitacion</label>
-              <select name="tipo" id="tipo" className="form-control" required>
-                <option value="individual">Individual</option>
-                <option value="doble">Doble</option>
-                <option value="suite">Suite</option>
-                <option value="deluxe">Deluxe</option>
-              </select>
+              <input type="date" className="form-control" placeholder="Fecha de salida" name='fecha_fin' onChange={handleFechaFinChange} required/>
             </div>
           </div>
           <div className="col-md-6">
@@ -113,6 +134,12 @@ export const FormReserva = () => {
               </select>
             </div>
           </div>
+          <div className="col-md-6">
+            <div className="form-group">
+            <label htmlFor="">Total a pagar</label>
+            <input type="text" className='form-control' readOnly value={`Total: ${total}`} />
+            </div>
+          </div>
           <div className='mt-4'>
             <button className='btn btn-success'>Reservar</button>
           </div>
@@ -122,7 +149,7 @@ export const FormReserva = () => {
 
       </form>
 
-    </section>
+    </>
     
   )
 }

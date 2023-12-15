@@ -7,7 +7,7 @@ export const DatoCliente = () => {
   const [opcion, setOpcion] = useState('existente')
   
   return (
-    <section>
+    <>
 
       <div className="d-flex gap-1">
         <option typeof='button' value="nuevo" className='form-control boton-opcion' onClick={() => setOpcion('nuevo')}>Nuevo Cliente</option>
@@ -23,6 +23,6 @@ export const DatoCliente = () => {
         <FormRegistroClientes cambiarOpcion={setOpcion}/>
       )
       }
-    </section>
+    </>
   )
 }
