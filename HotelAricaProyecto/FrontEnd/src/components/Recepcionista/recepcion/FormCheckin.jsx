@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ReservaContext } from '../../../context/ReservaContext'
 import { ClienteContext } from '../../../context/ClientesContext'
 import { LoginContext } from '../../../context/LoginContext'
@@ -13,8 +13,11 @@ export const FormCheckin = () => {
   const { stateHabitacion } = useContext(HabitacionContext)
 
   const [total, setTotal] = useState(0); // Nuevo estado para el total
-  const [fechaInicio, setFechaInicio] = useState(null); // Nuevo estado para la fecha de inicio
-  const [fechaFin, setFechaFin] = useState(null); // Nuevo estado para la fecha de fin
+  const hoy = new Date();
+  const [fechaFin, setFechaFin] = useState() // la fecha de fin es la fecha actual
+  const [fechaInicio, setFechaInicio] = useState(hoy.toISOString().split('T')[0]) // la fecha de inicio es la fecha actual
+ 
+  
   const enviarFormulario = async(event) => {
     event.preventDefault()
     const form = new FormData(event.target)
@@ -60,22 +63,18 @@ export const FormCheckin = () => {
 
   }
   const calcularTotal = (fechaInicio, fechaFin, precioPorDia) => {
-    const inicio = new Date(fechaInicio);
+    const inicio = new Date(fechaInicio) // se crea un objeto de tipo fecha con la fecha de inicio
     const fin = new Date(fechaFin);
     const diferenciaEnMilisegundos = Math.abs(fin - inicio);
-    const diferenciaEnDias = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+    const diferenciaEnDias = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24)); // se obtiene la diferencia en dias
+    // math.ceil redondea hacia arriba el numero
     setTotal(diferenciaEnDias * precioPorDia);
   }
-  const handleFechaInicioChange = (event) => {
-    setFechaInicio(event.target.value);
-    if (fechaFin) {
-      calcularTotal(event.target.value, fechaFin, stateHabitacion.habitacionSeleccionada.precio);
-    }
-  }
-
   const handleFechaFinChange = (event) => {
     setFechaFin(event.target.value);
+    console.log(fechaInicio)
     if (fechaInicio) {
+      console.log(fechaInicio)
       calcularTotal(fechaInicio, event.target.value, stateHabitacion.habitacionSeleccionada.precio);
     }
   }
@@ -115,7 +114,7 @@ export const FormCheckin = () => {
         <div className="col-md-12">
           <div className="form-group">
             <label htmlFor="">Fecha de entrada</label>
-            <input type="date" className="form-control" placeholder="Fecha de entrada" name='fecha_inicio' onChange={handleFechaInicioChange} required />
+            <input type="date" className="form-control" placeholder="Fecha de entrada" name='fecha_inicio' value={fechaInicio} readOnly/>
           </div>
           </div>
           <div className="col-md-12">
