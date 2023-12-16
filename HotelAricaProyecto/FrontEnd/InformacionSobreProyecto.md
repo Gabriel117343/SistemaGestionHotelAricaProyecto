@@ -8,6 +8,7 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 > [!NOTE]
+> Esto es una nota
 - PARA EL PRIMER PROTOTIPADO---------------------
 
 -en api iran las solicitudes Axios o fetch para llamar el Crud desde django, por ejemplo habitaciones, usuario etc.., Responsable(Programadores)
