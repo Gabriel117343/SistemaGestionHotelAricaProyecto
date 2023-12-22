@@ -8,11 +8,13 @@ import './stylesTabla.css'
 import { Modal, Button } from 'react-bootstrap';
 import { FormularioEdicionHabitacion } from './FormularioEdicionHabitacion'
 import swal from 'sweetalert2'
+import { debounce } from 'lodash'
 export const TablaHabitacionesContenedor = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [habitacionSeleccionada, setHabitacionSeleccionada] = useState(null);
   
+  const [habitacionBuscada, setHabitacionBuscada] = useState(null)
   const { stateHabitacion, eliminarHabitacion, getHabitacion, getHabitaciones, editarHabitacion } = useContext(HabitacionContext)
   useEffect(() => {
     getHabitaciones() 
@@ -67,9 +69,20 @@ export const TablaHabitacionesContenedor = () => {
 
     setShowModal(false);
   }
+  const cambiarFiltro = (event) => {
+  
+    setHabitacionBuscada(event.target.value) // se guarda el valor del input de busqueda en el estado productoBuscado
+    console.log(habitacionBuscada)
+  }
+  const debounceCambiarFiltro = debounce(cambiarFiltro, 300) // se hace un debounce para retrasar la ejecucion de la funcion cambiarFiltro
   return (
     <section className='pt-2'>
-      <ValidarHabitaciones listaHabitaciones={stateHabitacion.habitaciones} borrarHabitacion={borrarHabitacion} edicionHabitacion={edicionHabitacion}/>
+      <div className="row d-flex mb-2">
+        <div className="col-md-12">
+          <input className="form-control" type="text" placeholder="Buscar producto por numero, tipo, precio, cama, ocupacion..." onChange={debounceCambiarFiltro} />
+        </div>
+      </div>
+      <ValidarHabitaciones listaHabitaciones={stateHabitacion.habitaciones} borrarHabitacion={borrarHabitacion} edicionHabitacion={edicionHabitacion} filtro={habitacionBuscada}/>
   
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton className='bg-info'>

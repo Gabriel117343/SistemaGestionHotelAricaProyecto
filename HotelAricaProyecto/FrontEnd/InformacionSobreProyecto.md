@@ -32,7 +32,7 @@ Currently, two official plugins are available:
 - nav fondo  background-color: rgb(89, 11, 161);
 
 
-
+>[!info]
 GITHUB COPILOT CHAT INFORMACIONES:
 
 Gabriel117343: me surigio una duda, si tengo en mi proyecto de react una carpeta components y otra pages donde iran las paginas, las paginas deberian tener los componentes?, si es asi entonces lo que deberia proteger en rutas protegidas deberian ser las paginas ya que los componenetes como por ejemplo un componente que rederiza una tabla de informacion podria ser utilizado tanto para una pagina de administrador como por una pagina de recepcionista?

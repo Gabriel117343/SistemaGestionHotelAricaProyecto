@@ -16,7 +16,7 @@ class Usuario(AbstractUser):
     USERNAME_FIELD = 'email' # el email es el campo que se usa para logearse
     REQUIRED_FIELDS = ['username']# email y password son requeridos por defecto
     telefono = models.CharField(max_length=15)
-    jornada = models.CharField(max_length=10, choices=[('duirno', 'Duirno'), ('vespertino', 'Vespertino')], default='duirno')
+    jornada = models.CharField(max_length=10, choices=[('duirno', 'Duirno'), ('vespertino', 'Vespertino'), ('mixta', 'Mixta')], default='duirno')
     rol = models.CharField(max_length=15, choices=ROLES, default='recepcionista')
     imagen = models.ImageField(upload_to='imagenes/', null=True, blank=True)
    
@@ -90,6 +90,16 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f'Reserva para {self.cliente} en {self.habitacion}'
+class Notificacion(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    motivo = models.CharField(max_length=50)
+    mensaje = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+    hora = models.TimeField(auto_now_add=True, blank=True, null=True)
+    leida = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.mensaje
 
 
     

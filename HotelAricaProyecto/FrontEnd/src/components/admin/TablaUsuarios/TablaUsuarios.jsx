@@ -1,8 +1,12 @@
 import { set } from 'lodash'
 import { useState, useRef } from 'react'
 import { MagicMotion } from 'react-magic-motion'
+import { LuSunMoon } from "react-icons/lu"
+export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario, filtro }) => {
 
-export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) => {
+  if (filtro) {
+    listaPersonas = listaPersonas.filter(person => person.nombre.toLowerCase().includes(filtro.toLowerCase()) || person.apellido.toLowerCase().includes(filtro.toLowerCase()) || person.rut.toLowerCase().includes(filtro.toLowerCase()) || person.telefono.toLowerCase().includes(filtro.toLowerCase()) || person.rol.toLowerCase().includes(filtro.toLowerCase())) || person.email.toLowerCase().includes(filtro.toLowerCase())
+  }
   // Definir el estado para manejar la página actual, por defecto se mostrara la pagina 1 de la tabla
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -42,7 +46,7 @@ export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) =
         <tbody>
          
           
-          <MagicMotion transition={{ type: "spring", stiffness: 500, damping: 15 }}  >
+          <MagicMotion>
             {usuariosMostrar.map(person => (
 
               <tr key={person.id}>
@@ -55,7 +59,9 @@ export const MostrarTabla = ({ listaPersonas, borrarPersona, edicionUsuario }) =
                 <th>{person.telefono}</th>
                 <th>{person.email}</th>{/** Aqui se asignara un icono dependiendo del estado de la persona, por horario y si esta activo */}
                 <th className='text-capitalize'>{person.rol}</th>
-                <th className='text-center animacion-i'>{person.jornada === 'duirno' ? (<i className='bi bi-sun text-warning' />) : (<i className='bi bi-moon text-info' />)}</th>
+                {person.jornada === 'vespertino' && <th className='text-center animacion-i'><i className='bi bi-moon text-info' /></th>}
+                {person.jornada === 'duirno' && <th className='text-center animacion-i'><i className='bi bi-sun text-warning' /></th>}
+                {person.jornada === 'mixta' && <th className='text-center animacion-i'><i className='bi bi-moon text-info'></i><i className='bi bi-sun text-warning'></i></th>}
                 <th className='text-center animacion-i'>{person.is_active === true ? (<i className='bi bi-building-fill-up text-success' />) : (<i className='bi bi-building-fill-slash text-danger' />)}</th>
                 <th><button className='btn btn-sm btn-danger animacion-boton' onClick={() => borrarPersona(person.id)}><i className='bi bi-person-x' /> Eliminar</button></th>
 
@@ -120,12 +126,12 @@ export const SinUsuarios = () => {
     </section>
   )
 }
-export const ValidarUsuarios = ({ listaPersonas, borrarPersona, edicionUsuario }) => {
+export const ValidarUsuarios = ({ listaPersonas, borrarPersona, edicionUsuario, filtro}) => {
   const persona = listaPersonas?.length > 0
   // si persona es igual a true o false
   return (
     persona
-      ? <MostrarTabla listaPersonas={listaPersonas} borrarPersona={borrarPersona} edicionUsuario={edicionUsuario} />
+      ? <MostrarTabla listaPersonas={listaPersonas} borrarPersona={borrarPersona} edicionUsuario={edicionUsuario} filtro={filtro} />
       : <SinUsuarios />
   )
 }

@@ -234,9 +234,10 @@ export const FormularioEdicion = ({ cerrarModal }) => {
       <div className='form-group'>
         <label htmlFor={`${idEditAdmin}-jornada`}>Jornada</label>
         <select onChange={validarEstadoBoton} ref={jornadaRef} className='form-control' name='jornada' id={`${idEditAdmin}-jornada`} defaultValue={stateUsuario.usuarioSeleccionado.jornada}>
-
           <option value={stateUsuario.usuarioSeleccionado.jornada}>{stateUsuario.usuarioSeleccionado.jornada}</option>
-          <option value={stateUsuario.usuarioSeleccionado.jornada === 'vespertino' ? 'duirno' : 'vespertino'}>{stateUsuario.usuarioSeleccionado.jornada === 'vespertino' ? 'duirno' : 'vespertino'}</option>
+          {stateUsuario.usuarioSeleccionado.jornada !== 'duirno' && <option value='duirno'>Diurno</option>}
+          {stateUsuario.usuarioSeleccionado.jornada !== 'mixta' && <option value='mixta'>Mixto</option>}
+          {stateUsuario.usuarioSeleccionado.jornada !== 'vespertino' && <option value='vespertino'>Vespertino</option>}
         </select>
 
       </div>

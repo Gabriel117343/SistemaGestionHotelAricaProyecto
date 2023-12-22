@@ -4,8 +4,17 @@ import React, {useState} from 'react'
 
 import { MagicMotion } from 'react-magic-motion'
 
-const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }) => {
+const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion, filtro }) => {
 
+  if (filtro) {
+    listaHabitaciones = listaHabitaciones.filter(habitacion => {
+      return habitacion.estado.toLowerCase().includes(filtro.toLowerCase())
+        || habitacion.numero.toString().includes(filtro) // toString() para que no de error al buscar por numero
+        || habitacion.tipo.toLowerCase().includes(filtro.toLowerCase()) // toLowerCase() para que no de error al buscar por tipo
+        || habitacion.cama.toLowerCase().includes(filtro.toLowerCase())
+        || habitacion.ocupacion.toString().includes(filtro)
+    })
+  }
   const [currentPage, setCurrentPage] = useState(1)
   const cantidadHabitaciones = 10
   const startIndex = (currentPage - 1) * cantidadHabitaciones
@@ -34,7 +43,7 @@ const MostrarTabla = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }
 
         </thead>
         <tbody>
-          <MagicMotion transition={{ type: "spring", stiffness: 500, damping: 15 }}>
+          <MagicMotion>
             {habitacionesMostrar.map(habitacion => (
               <tr key={habitacion.id}>
                 <td>{contador++}</td>
@@ -105,12 +114,12 @@ const SinHabitaciones = () => {
     </section>
   )
 }
-export const ValidarHabitaciones = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion }) => {
+export const ValidarHabitaciones = ({ listaHabitaciones, borrarHabitacion, edicionHabitacion, filtro}) => {
 
   const habitacion = listaHabitaciones?.length > 0
   return (
     habitacion
-    ? <MostrarTabla listaHabitaciones={listaHabitaciones} borrarHabitacion={borrarHabitacion} edicionHabitacion={edicionHabitacion}/>
+    ? <MostrarTabla listaHabitaciones={listaHabitaciones} borrarHabitacion={borrarHabitacion} edicionHabitacion={edicionHabitacion} filtro={filtro}/>
     : <SinHabitaciones />
   )
 }

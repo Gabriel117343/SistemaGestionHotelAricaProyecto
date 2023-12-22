@@ -35,9 +35,6 @@ export const Login = () => {
     cerrar()
   }, [])
  
-
-  
-  
   const navigate = useNavigate()
   const enviarFormLogin = async (event) => { 
     event.preventDefault()
@@ -64,9 +61,8 @@ export const Login = () => {
           } else if (rol === 'recepcionista') {
             navigate('/recepcionista')
           } else if (rol === 'personalaseo') {
-            navigate('/personalaseo')
+            navigate('/aseo/home')
           }
-
         }, 1500)
 
       } else if (tipo === 'credenciales') {
@@ -142,7 +138,7 @@ export const Login = () => {
                   <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
                   
                   <div className='mb-5'>
-                    <img width='250px' src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="" />
+                    <img width='250px' src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="esto es una imagen de Login" />
                     <p className="text-white-50 pt-2">Porfavor inicia sesion!</p>
                   </div>
                   

@@ -3,7 +3,6 @@ const usuarioLoginApi = axios.create({
   baseURL: 'http://127.0.0.1:8000/usuarios/login'
 
 })
-
 const usuarioLogoutApi = axios.create({
   baseURL: 'http://127.0.0.1:8000/usuarios/logout'
 })
