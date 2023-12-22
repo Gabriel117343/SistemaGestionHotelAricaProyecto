@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Reserva, Habitacion, Cliente
+from .models import Usuario, Reserva, Habitacion, Cliente, Notificacion
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Usuario para serializar los datos
         model = Usuario
@@ -60,4 +60,8 @@ class HabitacionSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Cliente para serializar los datos
         model = Cliente
+        fields = '__all__'
+class NotificacionSerializer(serializers.ModelSerializer):
+    class Meta: # metadatos del modelo Notificacion para serializar los datos
+        model = Notificacion
         fields = '__all__'

@@ -13,8 +13,6 @@ export const FormularioRegistroHabitacion = () => {
     ocupacion: '2 personas'
   })
   const { crearHabitacion } = useContext(HabitacionContext) 
-
-
   const setInfoHabitacionDebounce = debounce(setInfoHabitacion, 1000)
   const handleInputChange = (value, field) => {
   

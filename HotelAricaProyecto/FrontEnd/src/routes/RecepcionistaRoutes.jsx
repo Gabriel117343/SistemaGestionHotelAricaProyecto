@@ -9,21 +9,26 @@ import { ClienteProvider } from '../context/ClientesContext'
 import { Reservas } from '../pages/Recepcionista/Reservas'
 import { Configuracion } from '../pages/Recepcionista/Configuracion'
 import { VerificacionSalida } from '../pages/Recepcionista/VerificacionSalida'
+import { NotificacionProvider } from '../context/NotificacionContext'
 export const RecepcionistaRoutes = () => {
   return (
-    <ClienteProvider>
-      <Navbar />
-      <Menu>
-        <Routes>
-          <Route path='/home' element={<Home />} />
-          <Route path='*' element={<Navigate to='/recepcionista/home' />} />
-          <Route path='/recepcion' element={<Recepcion />} />
-          <Route path='/reservas' element={<Reservas />} />
-          <Route path='/verificacion_salida' element={<VerificacionSalida />} />
-          <Route path='/configuracion' element={<Configuracion />} />
+    <NotificacionProvider>
+      <ClienteProvider>
+        <Navbar />
+        <Menu>
+          <Routes>
+            <Route path='/home' element={<Home />} />
+            <Route path='*' element={<Navigate to='/recepcionista/home' />} />
+            <Route path='/recepcion' element={<Recepcion />} />
+            <Route path='/reservas' element={<Reservas />} />
+            <Route path='/verificacion_salida' element={<VerificacionSalida />} />
+            <Route path='/configuracion' element={<Configuracion />} />
 
-        </Routes>
-      </Menu>
-    </ClienteProvider>
+          </Routes>
+        </Menu>
+      </ClienteProvider>
+
+    </NotificacionProvider>
+    
   )
 }

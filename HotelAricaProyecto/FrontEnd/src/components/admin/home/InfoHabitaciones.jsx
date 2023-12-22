@@ -25,7 +25,7 @@ export const ConHabitaciones = ({ habitaciones }) => {
   const cantidadHabitaciones = habitaciones.length
 
   return (
-    <section className='d-flex pt-3'>
+    <section className='d-flex pt-'>
       <div className="col-md-3">
         <div className="card text-white bg-primary mb-3 tamaño-card" style={{maxWidth: '18rem'}}>
           <div className="card-header">Habitaciones disponibles</div>

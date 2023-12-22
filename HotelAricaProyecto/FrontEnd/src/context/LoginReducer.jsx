@@ -24,5 +24,4 @@ export const LoginReducer = (state, action) => {
     default:
       return state // retorna el estado actual si no se cumple ningun caso
   }
-  
 }

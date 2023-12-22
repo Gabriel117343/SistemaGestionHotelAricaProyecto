@@ -27,34 +27,30 @@ export const FormRegistroClientes = ({cambiarOpcion}) => {
         
         <div className="col-md-6">
           <label htmlFor="nombre" className="form-label">Nombre</label>
-          <input type="text" className="form-control" id="nombre" name='nombre' placeholder='Ingrese el nombre'/>
+          <input type="text" className="form-control" id="nombre" name='nombre' placeholder='Ingrese el nombre' maxLength={20}/>
 
         </div>
         <div className="col-md-6">
           <label htmlFor="apellido" className="form-label">Apellido</label>
-            <input type="text" className="form-control" id="apellido" name='apellido'  placeholder='Ingrese el apellido'/>
+            <input type="text" className="form-control" id="apellido" name='apellido'  placeholder='Ingrese el apellido' maxLength={20}/>
 
         </div>
         <div className="col-md-6">
           <label htmlFor="rut" className="form-label">Rut</label>
-          <input type="text" className="form-control" id="rut" name='rut' placeholder='Ej: 12345678-9' />
-          
+          <input type="text" className="form-control" id="rut" name='rut' placeholder='Ej: 12345678-9' maxLength={10}/>
         </div>
-      
         <div className="col-md-6">
           <label htmlFor="telefono" className="form-label">Telefono</label>
-          <input type="text" className="form-control" id="telefono" name='telefono' placeholder='Ej: +56 932497343'/>
-
+          <input type="text" className="form-control" id="telefono" name='telefono' placeholder='Ej: +56 932497343' maxLength={11}/>
         </div>
         <div className="col-md-6">
           <label htmlFor="email" className="form-label">Correo</label>
-            <input type="email" className="form-control" id="email" name='email' placeholder='Ej: correo@gmail.com'/>
+            <input type="email" className="form-control" id="email" name='email' placeholder='Ej: correo@gmail.com' maxLength={20}/>
 
         </div>
         <div className="col-md-6">
           <label htmlFor="direccion" className="form-label">Direccion</label>
-            <input type="text" className="form-control" id="direccion" name='direccion' placeholder='Ingrese la direccion'/>
-
+            <input type="text" className="form-control" id="direccion" name='direccion' placeholder='Ingrese la direccion' maxLength={50}/>
         </div>
         <div className="col-12 col-md-6">
 

@@ -14,7 +14,7 @@ import { LoginContext } from './context/LoginContext'
 import { FormEnvioCorreo } from './pages/FormEnvioCorreo'
 import { CambiarContrasena } from './pages/CambiarContrasena'
 import { CargaDePagina } from './views/CargaDePagina'
-
+import { PersonalAseoRoutes } from './routes/PersonalAseoRoutes'
 
 function App() {
   const { obtenerUsuarioLogeado, state } = useContext(LoginContext)
@@ -31,7 +31,7 @@ function App() {
           setTimeout(() => {
             setLoading(false)
           }, 2000); // finally se ejecuta cuando se resuelve la promesa o cuando se rechaza 
-        });
+        })
       }
     } else {
       console.log('No hay token disponible');
@@ -52,18 +52,15 @@ function App() {
 
               <Route path="/recepcionista/*" element={<RecepcionistaRoutes />} />
               <Route path="/admin/*" element={<AdminRoutes />} /> {/* Rutas de admin "*"" son rutas comodin */}
+              <Route path="/aseo/*" element={<PersonalAseoRoutes />} />
               <Route path="/form-envio-correo" element={<FormEnvioCorreo />} />
           
               <Route path="/cambiar_contrasena/:uid/:token" element={<CambiarContrasena/>} />
-
-
-              
             </Routes>
             <HerramientaDesarrollo />
             <Toaster />
         
         </BrowserRouter>  
-   
   )
 }
 

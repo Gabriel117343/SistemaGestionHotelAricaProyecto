@@ -1,12 +1,14 @@
 import React from 'react'
 import { ListaReservas } from '../../components/Recepcionista/Reservas/ListaReservas'
+import './pages.css'
+import { FaConciergeBell } from "react-icons/fa"
 export const Reservas = () => {
   return (
      <>
-     <section className='container fondo-recepcion' >
-       <div className="d-flex align-items-center justify-content-left gap-3  pt-4">
+     <section className='container-fluid fondo-recepcion' >
+       <div className="d-flex align-items-center justify-content-left gap-3  pt-3 titulo-page">
          <div style={{fontSize: '40px'}} className='d-flex align-items-center p-0 m-0'>
-           <img width='40px' src="https://cdn-icons-png.flaticon.com/128/3313/3313488.png" alt="Esto es una imagen de un icono" />
+          <FaConciergeBell />
          </div>
          <h1 className='m-0'>Mis reservas</h1>
        </div>

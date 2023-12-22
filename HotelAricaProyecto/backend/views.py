@@ -1,8 +1,8 @@
 from cmath import e
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
-from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer, ClienteSerializer
-from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista
+from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer, ClienteSerializer, NotificacionSerializer
+from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista, Notificacion
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
 from django.http import JsonResponse
@@ -464,4 +464,48 @@ class ClienteView(viewsets.ModelViewSet): # este método es para listar, crear, 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-   
+class NotificacionView(viewsets.ModelViewSet):
+    serializer_class = NotificacionSerializer
+    queryset = Notificacion.objects.all()
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    # maneja errores con try except
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Notificaciones obtenidas!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response({'message': 'Notificacion eliminada!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        try:
+            # Obtiene el usuario a través del token
+            user = request.user
+            if user is None:
+                return Response({'error': 'No se ha encontrado el usuario'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Agrega el usuario al data del request
+            data = request.data.copy()
+            data['usuario'] = user.id
+
+            serializer = self.get_serializer(data=data)
+            if serializer.is_valid():
+                notificacion = serializer.save()
+                return Response({'data': serializer.data, 'message': 'Notificacion Enviada con Exito'}, status=status.HTTP_201_CREATED)
+            return Response({'error': 'No se ha podido enviar el mensaje'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    def update(self, request, *args, **kwargs):
+        try:
+            notificacion = self.get_object()
+            notificacion.leida = True
+            notificacion.save()
+            return Response({'message': 'Notificacion marcada como leida!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)

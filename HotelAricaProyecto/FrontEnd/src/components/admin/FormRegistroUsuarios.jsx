@@ -301,6 +301,7 @@ export const FormRegistroUsuarios = () => {
 
                     <option value='duirno'>Duirno</option>
                     <option value='vespertino'>Vespertino</option>
+                    <option value="mixta">Mixta</option>
                   </select>
                 </div>
                 <div className='form-group mt-3'>
