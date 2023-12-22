@@ -7,7 +7,6 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
->[!info]
 - PARA EL PRIMER PROTOTIPADO---------------------
 
 -en api iran las solicitudes Axios o fetch para llamar el Crud desde django, por ejemplo habitaciones, usuario etc.., Responsable(Programadores)
