@@ -35,10 +35,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data['password'])
         instance.save()
         return instance
-class ReservaSerializer(serializers.ModelSerializer):
-    class Meta: # metadatos del modelo Reserva para serializar los datos
-        model = Reserva
-        fields = '__all__'
+
+
 class HabitacionSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Habitacion para serializar los datos
         model = Habitacion
@@ -60,6 +58,11 @@ class HabitacionSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Cliente para serializar los datos
         model = Cliente
+        fields = '__all__'
+class ReservaSerializer(serializers.ModelSerializer):
+ 
+    class Meta: # metadatos del modelo Reserva para serializar los datos
+        model = Reserva
         fields = '__all__'
 class NotificacionSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Notificacion para serializar los datos

@@ -265,28 +265,6 @@ class ReservaView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
     
-class CheckinView(viewsets.ViewSet):
-    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
-
-    def create(self, request, *args, **kwargs):
-    
-        reserva_id = request.data.get('reserva')  # Obtener el ID de la reserva
-
-        try:
-            reserva = Reserva.objects.get(id=reserva_id)  # Obtener la reserva
-        except Reserva.DoesNotExist:
-            return Response({'error': 'No se encontró la reserva con el ID proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if reserva.fecha_inicio <= datetime.now().date():  # Si la fecha de inicio de la reserva es hoy o ya pasó
-            reserva.habitacion.estado = 'ocupada'  # Actualizar el estado de la habitación a 'ocupada'
-            reserva.habitacion.save()  # Guardar los cambios en la habitación
-
-            reserva.estado = 'en curso'  # Actualizar el estado de la reserva a 'en curso'
-            reserva.save()  # Guardar los cambios en la reserva
-
-            return Response({'message': 'Se ha hecho el check-in con éxito'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'No se puede hacer el check-in antes de la fecha de inicio de la reserva.'}, status=status.HTTP_400_BAD_REQUEST)      
 class CostCalculator(APIView):
     def post(self, request, *args, **kwargs):
         reserva_id = request.data.get('reserva')  # Obtener el ID de la reserva

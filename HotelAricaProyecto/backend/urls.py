@@ -16,8 +16,7 @@ router.register(r'habitaciones', views.HabitacionView, 'habitaciones')
 router.register(r'clientes', views.ClienteView, 'clientes')
 #checkout
 router.register(r'checkout', views.CheckoutView, basename='checkout')
-#checkin
-router.register(r'checkin', views.CheckinView, basename='checkin')
+
 #notificaciones
 router.register(r'notificaciones', views.NotificacionView, 'notificaciones')
 urlpatterns = [
@@ -31,6 +30,4 @@ urlpatterns = [
     path('send_password_reset_email/',  SendPasswordResetEmailView.as_view()),
     path('reset_password/', ResetPasswordView.as_view()),
     path('calculate_cost/', views.CostCalculator.as_view()),
-  
-
 ]

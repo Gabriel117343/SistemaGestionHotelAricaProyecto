@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'rest_framework.authtoken',  # Asegúrate de que esto está incluido
+    'rest_framework.authtoken',  # Asegúrate de que esto está incluido, esto es para que se pueda autenticar con tokens
     'coreapi',
     'backend',
 ]
