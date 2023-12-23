@@ -1,116 +1,158 @@
-import React, { useContext, useState } from 'react'
-import { HabitacionContext } from '../../../context/HabitacionContext'
-import { toast } from 'react-hot-toast'
+import React, { useContext, useState } from 'react';
+import { HabitacionContext } from '../../../context/HabitacionContext';
+import { toast } from 'react-hot-toast';
+
 export const FormularioEdicionHabitacion = ({ cerrarModal }) => {
-  const { stateHabitacion, editarHabitacion } = useContext(HabitacionContext)
-  const [imagen, setImagen] = useState(false)
-  
+  const { stateHabitacion, editarHabitacion } = useContext(HabitacionContext);
+  const [validaciones, setValidaciones] = useState({
+    numero: { valido: true, mensaje: '' },
+    precio: { valido: true, mensaje: '' },
+    cama: { valido: true, mensaje: '' },
+    descripcion: { valido: true, mensaje: '' },
+  });
 
-  const enviarFormularioRegistro = async(event) => {
-    event.preventDefault()
-    const habitacion = Object.fromEntries(new FormData(event.target))
-    // transformar oobjeto habitacion a form data
-    const form = new FormData()
-    // se comprueba si cada campo existe para agregarlo al form data, porque si no existe, no se debe agregar
-    // si se envia un dato null o undefined, el backend lo recibe como un string vacio y da error 400 bad request
-    // if (habitacion.numero) form.append('numero', habitacion.numero)
-    // if (habitacion.precio) form.append('precio', habitacion.precio)
-    // if (habitacion.estado) form.append('estado', habitacion.estado)
-    // if (habitacion.cama) form.append('cama', habitacion.cama)
-    // if (habitacion.ocupacion) form.append('ocupacion', habitacion.ocupacion)
-    // if (habitacion.tipo) form.append('tipo', habitacion.tipo)
-    // if (habitacion.imagen) form.append('imagen', habitacion.imagen)
-    // if (habitacion.descripcion) form.append('descripcion', habitacion.descripcion)
-     form.append('numero', habitacion.numero)
-     form.append('precio', habitacion.precio)
-     form.append('estado', habitacion.estado)
-     form.append('cama', habitacion.cama)
-     form.append('ocupacion', habitacion.ocupacion)
-     form.append('tipo', habitacion.tipo)
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-     // --------------------------------------------------------
-      if (imagen) { // si se selecciono una imagen, se agrega al form data
-        // esto para evitar que se envie una imagen vacia y se elimine la imagen actual
-        form.append('imagen', habitacion.imagen)
-      
-      }
-     
-     // --------------------------------------------------------
-     form.append('descripcion', habitacion.descripcion)
+    // Realizar la validación en tiempo real
+    const nuevaValidacion = validarCampo(name, value);
+    setValidaciones((prevValidaciones) => ({ ...prevValidaciones, [name]: nuevaValidacion }));
+  };
 
-    const { success, message } = await editarHabitacion(stateHabitacion.habitacionSeleccionada.id, form)
-    if (success) {
-      toast.success(message)
-    
-      cerrarModal()
-    } else {
-      cerrarModal()
-      toast.error('Hubo un error al editar la habitacion.')
+  const enviarFormularioRegistro = async (event) => {
+    event.preventDefault();
+
+    // Validar todos los campos antes de enviar el formulario
+    const todasLasValidacionesSonCorrectas = Object.values(validaciones).every((v) => v.valido);
+
+    if (!todasLasValidacionesSonCorrectas) {
+      toast.error('Por favor, corrija los campos con errores antes de enviar el formulario.');
+      return;
     }
-  
-  }
+
+    // Resto del código para enviar el formulario
+    const habitacion = Object.fromEntries(new FormData(event.target));
+    const form = new FormData();
+
+    form.append('numero', habitacion.numero);
+    form.append('precio', habitacion.precio);
+    form.append('cama', habitacion.cama);
+    form.append('descripcion', habitacion.descripcion);
+    // Agregar el resto de campos al FormData...
+
+    const { success, message } = await editarHabitacion(stateHabitacion.habitacionSeleccionada.id, form);
+
+    if (success) {
+      toast.success(message);
+      cerrarModal();
+    } else {
+      cerrarModal();
+      toast.error('Hubo un error al editar la habitación.');
+    }
+  };
+
+  const validarCampo = (campo, valor) => {
+    switch (campo) {
+      case 'numero':
+        const esNumero = !isNaN(valor) && parseInt(valor) <= 999;
+        return {
+          valido: esNumero,
+          mensaje: esNumero ? '' : 'Ingrese un número válido.',
+        };
+
+      case 'precio':
+        const esPrecioValido = !isNaN(valor) && parseInt(valor) <= 200000;
+        return {
+          valido: esPrecioValido,
+          mensaje: esPrecioValido ? '' : 'Ingrese un precio válido (hasta 200,000).',
+        };
+
+      case 'cama':
+        const esCamaValida = !/^\d+$/.test(valor);
+        return {
+          valido: esCamaValida,
+          mensaje: esCamaValida ? '' : 'Ingrese un valor no numérico para la cama.',
+        };
+
+      case 'descripcion':
+        const esDescripcionValida = valor.trim() !== '';
+        return {
+          valido: esDescripcionValida,
+          mensaje: esDescripcionValida ? '' : 'La descripción no puede estar vacía.',
+        };
+
+      default:
+        return { valido: true, mensaje: '' };
+    }
+  };
+
   return (
     <form onSubmit={enviarFormularioRegistro}>
-          <div className="form-group">
-            <label htmlFor='numero'>Numero</label>
-            <input defaultValue={stateHabitacion.habitacionSeleccionada.numero} type="number" className='form-control' placeholder='Ej: 233' maxLength={3} name='numero'/>
-          </div>
-          
-          <div className="form-group">
-            <label  htmlFor='precio'>Precio Noche</label>
-            <input type="number" className='form-control' name='precio' placeholder='Ej:20000' maxLength={5} defaultValue={stateHabitacion.habitacionSeleccionada.precio}/>
-          </div>
-          
-        
-          <div className="form-group">
-            <label  htmlFor='estado'>Estado</label>
-            <select className='form-control' type='text' name="estado" id="estado" defaultValue={stateHabitacion.habitacionSeleccionada.estado}>
-                <option value="disponible">Disponible</option>
-                <option value="ocupada">Ocupada</option>
-                <option value="mantenimiento">Mantenimiento</option>
-            </select>
-         
-          </div>
-          <div className="form-group">
-            <label htmlFor='camas'>Cama</label>
-            <input type="text" className='form-control' placeholder='Cama Mediana King...' name='cama' defaultValue={stateHabitacion.habitacionSeleccionada.cama}/>
-          </div>
-          <div className="form-group">
-            <label htmlFor='ocupacion'>Ocupacion</label>
-            <select type='number' className='form-control' name='ocupacion' defaultValue={stateHabitacion.habitacionSeleccionada.ocupacion}>
-              <option value="1">1 Persona</option>
-              <option value="2">2 Personas</option>
-              <option value="3">3 Personas</option>
+      <div className="form-group">
+        <label htmlFor="numero">Numero</label>
+        <input
+          defaultValue={stateHabitacion.habitacionSeleccionada.numero}
+          type="text"
+          className={`form-control ${validaciones.numero.valido ? '' : 'is-invalid'}`}
+          placeholder="Ej: 233"
+          maxLength={3}
+          name="numero"
+          onChange={handleChange}
+        />
+        <div className="invalid-feedback">{validaciones.numero.mensaje}</div>
+      </div>
 
-            </select>
-            
-          </div>
-          <div className="form-group">
-           
-            <label  htmlFor='tipo'>Tipo</label>
-            <select className='form-control' name="tipo" id="tipo" defaultValue={stateHabitacion.habitacionSeleccionada.tipo}>
-                <option value="individual">Individual</option>
-                <option value="doble">Doble</option>
-                <option value="suite">Suite</option>
-                <option value="deluxe">Deluxe</option>
-            </select>
-            
-           
-          </div>
-          <div className="form-group">
-            <label htmlFor='imagen'>Imagen</label>
-            <input type="file" className='form-control' name='imagen' onChange={() => setImagen(true)}/>
-          </div>
-          <div className="form-group">
-            <label htmlFor='descripcion' >Descripcion</label>
-          
-            <textarea placeholder='Habitacion con servicios incluidos..' style={{height: '7rem'}}  className='form-control' name="descripcion" id="descripcion" cols="30" rows="10" defaultValue={stateHabitacion.habitacionSeleccionada.descripcion}></textarea>
-          </div>
-          <div className='pt-3 d-flex justify-content-between'>
-            <button type='submit' className='btn btn-success'>Editar</button>
-            <button type='button' onClick={cerrarModal} className='btn btn-danger'>Cancelar</button>
-          </div>
-        </form>
-    
-  )
-}
+      <div className="form-group">
+        <label htmlFor="precio">Precio Noche</label>
+        <input
+          type="text"
+          className={`form-control ${validaciones.precio.valido ? '' : 'is-invalid'}`}
+          name="precio"
+          placeholder="Ej:20000"
+          maxLength={5}
+          defaultValue={stateHabitacion.habitacionSeleccionada.precio}
+          onChange={handleChange}
+        />
+        <div className="invalid-feedback">{validaciones.precio.mensaje}</div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="cama">Cama</label>
+        <input
+          type="text"
+          className={`form-control ${validaciones.cama.valido ? '' : 'is-invalid'}`}
+          placeholder="Cama Mediana King..."
+          name="cama"
+          defaultValue={stateHabitacion.habitacionSeleccionada.cama}
+          onChange={handleChange}
+        />
+        <div className="invalid-feedback">{validaciones.cama.mensaje}</div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="descripcion">Descripcion</label>
+        <textarea
+          placeholder="Habitacion con servicios incluidos.."
+          style={{ height: '7rem' }}
+          className={`form-control ${validaciones.descripcion.valido ? '' : 'is-invalid'}`}
+          name="descripcion"
+          id="descripcion"
+          cols="30"
+          rows="10"
+          defaultValue={stateHabitacion.habitacionSeleccionada.descripcion}
+          onChange={handleChange}
+        ></textarea>
+        <div className="invalid-feedback">{validaciones.descripcion.mensaje}</div>
+      </div>
+
+      <div className="pt-3 d-flex justify-content-between">
+        <button type="submit" className="btn btn-success">
+          Editar
+        </button>
+        <button type="button" onClick={cerrarModal} className="btn btn-danger">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  );
+};

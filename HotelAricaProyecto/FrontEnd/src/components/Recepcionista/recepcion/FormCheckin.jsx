@@ -140,7 +140,7 @@ export const FormCheckin = () => {
             </div>
           </div>
           <div className='mt-4'>
-            <button className='btn btn-success'>Reservar</button>
+            <button className='btn btn-success'>Continuar</button>
           </div>
           
         </div>
