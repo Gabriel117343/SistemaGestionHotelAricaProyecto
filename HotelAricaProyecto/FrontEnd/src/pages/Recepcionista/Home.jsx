@@ -1,6 +1,7 @@
 import React, {} from 'react'
 import { FaHome } from "react-icons/fa";
 import { InfoHabitaciones } from '../../components/admin/home/InfoHabitaciones'
+import { Grafico } from '../../components/admin/home/Grafico'
 import './pages.css'
 export const Home = () => {
   return (
@@ -16,6 +17,11 @@ export const Home = () => {
 
         </div>
         <InfoHabitaciones />
+        <br />
+        <br />
+        <br />
+        <br />
+        <Grafico />
       </section>
     </>
     

@@ -1,21 +1,28 @@
 
 import React, { useContext, useEffect }from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
+import { VentasContext } from '../../../context/VentasContext'
+
 import './styles.css'
 export const InfoHabitaciones = () => {
 
   const { stateHabitacion, getHabitaciones } = useContext(HabitacionContext)
+  const { stateVenta, getVentasContext } = useContext(VentasContext)
   useEffect(() => {
     getHabitaciones()
+    getVentasContext()
   }, [])
   const validacion = stateHabitacion?.habitaciones.length > 0
+  
   console.log(validacion)
+  console.log(stateVenta)
   return (validacion ?
   <ConHabitaciones habitaciones={stateHabitacion.habitaciones} />
   :
   <SinHabitaciones />)
  }
 
+ 
 export const ConHabitaciones = ({ habitaciones }) => {
 
   
@@ -63,9 +70,6 @@ export const ConHabitaciones = ({ habitaciones }) => {
           </div>
         </div>
       </div>
-  
-     
-
     </section>
   )
 }
@@ -109,6 +113,7 @@ export const SinHabitaciones = () => {
           </div>
         </div>
       </div>
+      
 
     </ section>
   )

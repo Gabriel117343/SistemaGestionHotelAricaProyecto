@@ -25,6 +25,7 @@
     "react-image-gallery": "^1.3.0",
     "react-magic-motion": "^1.1.2",
     "react-router-dom": "^6.19.0",
+    "recharts": "^2.10.3",
     "sweetalert2": "^11.10.1",
     "toaster": "^0.1.2"
   },

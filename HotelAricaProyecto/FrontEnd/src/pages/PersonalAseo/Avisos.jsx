@@ -11,6 +11,10 @@ export const Avisos = () => {
           </div>
           <h1 className='m-0'>Notificar</h1>
         </div>
+        <div>
+          <h2 className='m-0'>Aviso de limpieza</h2>
+          <p>Se notificara al recepcionista</p>
+        </div>
         <FormularioEnvioNotificacion />
       </section>
     </>
