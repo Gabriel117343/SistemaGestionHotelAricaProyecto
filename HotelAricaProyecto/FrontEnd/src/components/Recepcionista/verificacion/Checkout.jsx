@@ -23,10 +23,24 @@ export const Checkout = ({ habitacion, cliente, reserva}) => {
 
   }
   const TerminarReserva = async () => {
+    // alerta de que si el cliente no se ha hospedado continuar o cancelar
+    if (total === 0) {
+      const { isConfirmed } = await swal.fire({
+        icon: 'warning',
+        title: 'El cliente no se ha hospedado',
+        text: '¿Desea continuar?',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+      })
+      if (!isConfirmed) {
+        return
+      }
+    }
     const form = new FormData()
     const toastId = toast.loading('Terminando reserva...', { id: 'loading' })
     form.append('estado', 'mantenimiento')
-
+    
     const { success } = await editarHabitacion(idHabitacion, form)
     if (success) {
       toast.dismiss(toastId, { id: 'loading' })

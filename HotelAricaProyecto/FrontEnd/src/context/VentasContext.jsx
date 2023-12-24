@@ -23,6 +23,7 @@ export const VentasProvider = ({ children }) => {
         });
         return { success: true, message: res.data.message };
       }
+      
     } catch (error) {
       throw error.response.data.error;
     }

@@ -1,5 +1,7 @@
 import React from 'react'
-import { FaHome } from "react-icons/fa";
+import { FaHome } from "react-icons/fa"
+import { ListaHabitaciones } from '../../components/personalAseo/Home/ListaHabitaciones'
+import { HabitacionProvider } from '../../context/HabitacionContext'
 export const Home = () => {
   return (
     <>
@@ -13,6 +15,9 @@ export const Home = () => {
           <h1 className='m-0'>Principal</h1>
 
         </div>
+        <HabitacionProvider>{/* Se envuelve el componente para que pueda acceder al context */  }
+          <ListaHabitaciones />
+        </HabitacionProvider>
         
       </section>
     </>
