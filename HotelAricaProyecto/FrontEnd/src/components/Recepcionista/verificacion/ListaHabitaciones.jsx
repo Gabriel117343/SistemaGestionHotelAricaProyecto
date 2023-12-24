@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
-import './styles.css'
+import './verificacion.css'
 import { Checkout } from './Checkout'
 import { ReservaContext } from '../../../context/ReservaContext' 
 import { ClienteContext } from '../../../context/ClientesContext'
@@ -54,7 +54,7 @@ export const ListaHabitaciones = () => {
       
             <p style={{ textTransform: 'capitalize' }}>{habitacion.tipo}</p>
           </div>
-          <button className='btn form-control checkout-boton-fondo' onClick={() => seleccionar(habitacion.id)}>Verificar Salida <i class="bi bi-info-circle-fill text-white"></i></button>
+          <button className='btn form-control checkout-boton-fondo-fn' onClick={() => seleccionar(habitacion.id)}>Verificar Salida <i class="bi bi-info-circle-fill text-white"></i></button>
         </div>
         ))}
       </div>

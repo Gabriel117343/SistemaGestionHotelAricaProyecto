@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState} from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
-import './styles.css'
+import './recepcion.css'
 import { MagicMotion } from 'react-magic-motion'
 import swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
@@ -16,9 +16,19 @@ export const Habitaciones = () => {
 
 
   useEffect(() => {
-    getHabitaciones()
+    const cargar = async () => {
+      await getHabitaciones()
+    }
+    cargar()
+    // intervalo
+    const interval = setInterval(() => {
+      cargar()
+    }, 15000)
+    return () => clearInterval(interval) // Limpiar el intervalo cuando el componente se desmonte
   }, [])
   console.log(stateHabitacion.habitaciones)
+
+  
 
   const alerta = () => {
     swal.fire({

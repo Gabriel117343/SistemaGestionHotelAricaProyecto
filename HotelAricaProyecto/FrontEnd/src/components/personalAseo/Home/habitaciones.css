@@ -1,0 +1,25 @@
+div.card-limpieza-fondo {
+  background: #3737cf !important;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #1CB5E0, #6f6fe6) !important;  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #1CB5E0, #1f1fac) !important; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  padding: 0;
+  color: white;
+  border : 5px solid white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+  border-bottom: 3px;
+
+}
+button.checkout-boton-fondo {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  color: white;
+  
+  background: rgb(18, 85, 161) !important;
+}
+.ocupada:hover {
+
+  animation: efectoHabitacion 1s;
+}
