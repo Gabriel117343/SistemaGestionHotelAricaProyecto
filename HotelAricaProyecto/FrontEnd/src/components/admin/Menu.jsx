@@ -65,7 +65,7 @@ export const Menu = ({ children }) => {
                 </>
               )
             } 
-            <div className="bars ms-5 ps-3 py-2">
+            <div className="bars ms-5 p-2 py-2">
               <FaBars onClick={toggle}/>
 
             </div>

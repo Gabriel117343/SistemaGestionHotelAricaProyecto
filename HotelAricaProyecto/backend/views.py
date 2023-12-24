@@ -408,7 +408,8 @@ class HabitacionView(viewsets.ModelViewSet): # este método es para listar, crea
             print('Estado')
             print(old_estado)
             if old_estado == 'ocupada' or old_estado == 'mantenimiento':
-                Reserva.objects.filter(habitacion=instance).delete()
+                # Cambia el estado de las reservas a 'completada' en lugar de eliminarlas
+                Reserva.objects.filter(habitacion=instance).update(estado='completada')
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 

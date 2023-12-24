@@ -1,4 +1,4 @@
-import React, { useContext, useId, useState, useRef } from 'react'
+import React, { useContext, useId, useState, useRef, useEffect } from 'react'
 import { InformacionUsuario } from './InformacionUsuario'
 import { LoginContext } from '../../../context/LoginContext'
 import { UsuariosContext } from '../../../context/UsuariosContext'
@@ -6,6 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' // icono eye pa
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-hot-toast'
 import './configuracion.css'
+import { useClasesInput } from '../../../hooks/useClasesInput'
+import swal from 'sweetalert2'
+import { debounce } from 'lodash'
 export const CambiarImagenPerfil = () => {
   const { state, obtenerUsuarioLogeado } = useContext(LoginContext) // se obtiene el usuario logeado actual
   const { modificarUsuario } = useContext(UsuariosContext) // se obtiene el usuario
@@ -15,11 +18,17 @@ export const CambiarImagenPerfil = () => {
 
   const [mostrarContraseña1, setMostrarContraseña1] = useState(false)
   const [mostrarContraseña2, setMostrarContraseña2] = useState(false)
+
   const formImagenId = useId()
   const formContraseñaId = useId()
 
-  const formImagenRef = useRef()
+  const formImagenRef = useRef() // referencia al formulario de imagen
   const formContraseñaRef = useRef()
+
+
+  // clase que referencia al input de contraseña
+  const clasesInputContraseña1 = useClasesInput()
+  const clasesInputContraseña2 = useClasesInput()
   const cambiarImagenPerfil = async (event) => {
     event.preventDefault()
     const imagen = event.target[0].files[0]
@@ -56,7 +65,12 @@ export const CambiarImagenPerfil = () => {
     const toastId = toast.loading('Cargando...', { id: 'loading' })
     if (validacion.contraseña !== validacion.contraseñaValidacion) {
       toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-      toast.error('Las contraseñas no coinciden')
+      swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Las contraseñas no coinciden',
+        confirmButtonText: 'Ok',
+      })
       return
     } else {
      
@@ -64,7 +78,16 @@ export const CambiarImagenPerfil = () => {
         const { success, message } = await modificarUsuario(state.usuario.id, formData)
         if (success) {
           toast.dismiss(toastId, { id: 'loading' }) // cerrar el toast de cargando
-          toast.success('Contraseña cambiada con éxito')
+          swal.fire({
+            icon: 'success',
+            title: 'Contraseña cambiada con exito',
+            showConfirmButton: false,
+            onOpen: () => {
+              setTimeout(() => {
+                swal.close()
+              }, 1000)
+            }
+          })
           formContraseñaRef.current.reset()
 
         } else {
@@ -83,6 +106,18 @@ export const CambiarImagenPerfil = () => {
   const estadoContraseña2 = () => {
     setMostrarContraseña2(prevState => !prevState)
   }
+   /// /si el input esta vacio retornara un true
+   const validarCampos = (validar) => {
+    validar = validar.trim()// trim eliminara los espacios en blanco
+    return !validar
+  }
+  const validarContraseña = async (valor, claseInput, inputComprobar) => {
+
+    console.log('validando...')
+    await claseInput.datoInput(validarCampos(valor), inputComprobar, valor)
+    // si las clases de los input son validas se habilitara el boton de guardar
+  }
+  const debouncedValidarContraseña = debounce(validarContraseña, 300)
 
   return (
     <div className="row mt-2">
@@ -110,25 +145,31 @@ export const CambiarImagenPerfil = () => {
               <div className="card-body">
                 <form className={formContraseñaId} onSubmit={cambiarContraseña} ref={formContraseñaRef}>
                   <h2>Cambiar contraseña</h2>
-                  <div className="mb-3 contraseña-cont">
+                  <div className=" contraseña-cont">
                     <label for="formFile" className="form-label"> Contraseña</label>
-                    <input className="form-control" type={mostrarContraseña1 ? 'text' : 'password'} name='contraseña' required/>
+                    <input onChange={e => debouncedValidarContraseña(e.target.value, clasesInputContraseña1, 'contraseña')} className={`form-control ${clasesInputContraseña1.clase}`} type={mostrarContraseña1 ? 'text' : 'password'} name='contraseña' required/>
                     <span className='icon'>
                         <FontAwesomeIcon style={{width: '20px', height: '25px'}}
                           icon={mostrarContraseña1 ? faEyeSlash : faEye}
                           onClick={estadoContraseña1}
                         />
-                      </span>
+                    </span>
+                    <div className='advertencia'>
+                      <p className='d-block text-danger m-0'>{clasesInputContraseña1.advertencia}</p>
+                    </div>
                   </div>
-                  <div className="mb-3 contraseña-cont">
+                  <div className=" contraseña-cont">
                     <label for="formFile" className="form-label">Confirmar Contraseña</label>
-                    <input className="form-control" type={mostrarContraseña2 ? 'text' : 'password'} name='contraseñaValidacion'  required/>
+                    <input onChange={e => debouncedValidarContraseña(e.target.value, clasesInputContraseña2, 'contraseña')} className={`form-control ${clasesInputContraseña2.clase}`} type={mostrarContraseña2 ? 'text' : 'password'} name='contraseñaValidacion'  required/>
                     <span className='icon'>
                         <FontAwesomeIcon style={{width: '20px', height: '25px'}}
                           icon={mostrarContraseña2 ? faEyeSlash : faEye}
                           onClick={estadoContraseña2}
                         />
-                      </span>
+                    </span>
+                    <div className='advertencia'>
+                      <p className='d-block text-danger m-0'>{clasesInputContraseña2.advertencia}</p>
+                    </div>
                   </div>
                   <div className="mb-3">
                     <button className="btn btn-primary">Guardar</button>

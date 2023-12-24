@@ -8,7 +8,6 @@ export const Grafico = () => {
   useEffect(() => {
     getVentasContext();
   }, []);
-
   // Transforma los datos de ventas para que puedan ser usados por Recharts
   const data = stateVenta.ventas.map((venta, index) => ({
     name: `Venta ${index + 1}`,
@@ -16,7 +15,7 @@ export const Grafico = () => {
   }));
 
   return (
-    <BarChart width={250} height={300} data={data}>
+    <BarChart width={300} height={400} data={data}>
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />

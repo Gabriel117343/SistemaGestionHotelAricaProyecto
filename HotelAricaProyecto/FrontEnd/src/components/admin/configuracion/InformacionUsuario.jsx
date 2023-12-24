@@ -25,7 +25,7 @@ export const InformacionUsuario = ({usuario, usuarioImagen}) => {
             <strong>Rol:</strong>
             {usuario?.rol  ? 
             (
-              <p>{usuario.rol}</p>
+              <p className='text-capitalize'>{usuario.rol}</p>
             )
             :
             (
@@ -43,15 +43,9 @@ export const InformacionUsuario = ({usuario, usuarioImagen}) => {
           </div>
           <div className="d-flex gap-2">
             <strong>Jornada:</strong>
-            {usuario?.jornada === 'duirno' ?
-            
-            (
-              <p>Diurna <i className='bi bi-sun-fill text-warning'></i></p>
-            )
-            :
-            (
-              <p>Nocturna <i className='bi bi-moon-fill text-warning'></i></p>
-            )}
+            {usuario?.jornada === 'duirno' && <p>Diurna <i className='bi bi-sun-fill text-warning'></i></p>}
+            {usuario?.jornada === 'vespertino' && <p>Vespertina <i className='bi bi-moon text-info'></i></p>}
+            {usuario?.jornada === 'mixta' && <p>Mixta <i className='bi bi-sun-fill text-warning'></i> <i className='bi bi-moon text-info'></i></p>}
 
           </div>
         </div>

@@ -13,7 +13,7 @@
 
 .contraseña-cont .icon{
   position: absolute;
-  top: 77%;
+  top: 64%;
   right: 10px; /* Ajusta la posición del ícono */
   transform: translateY(-50%);
   cursor: pointer;
@@ -26,4 +26,8 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 0 auto;
   margin-top: 30px;
+}
+/*--------------------ESTILOS DE EL PARA EL FORMULARIO-------------------*/
+.advertencia {
+  height: 1rem;
 }
