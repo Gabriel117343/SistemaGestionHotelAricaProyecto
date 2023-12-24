@@ -19,6 +19,8 @@ router.register(r'checkout', views.CheckoutView, basename='checkout')
 
 #notificaciones
 router.register(r'notificaciones', views.NotificacionView, 'notificaciones')
+#ventas
+router.register(r'ventas', views.VentaView, 'ventas')
 urlpatterns = [
     path('datos/v1/', include(router.urls)),
     path('docs/', include_docs_urls(title="Usuarios Api")),

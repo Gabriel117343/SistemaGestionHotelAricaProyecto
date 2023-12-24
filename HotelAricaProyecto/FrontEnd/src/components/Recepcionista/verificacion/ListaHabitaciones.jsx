@@ -1,27 +1,43 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
 import './styles.css'
 import { Checkout } from './Checkout'
+import { ReservaContext } from '../../../context/ReservaContext' 
+import { ClienteContext } from '../../../context/ClientesContext'
 export const ListaHabitaciones = () => {
   const { stateHabitacion, getHabitaciones, getHabitacion} = useContext(HabitacionContext)
-
+  const { stateReserva: { reservas }, getReservas } = useContext(ReservaContext)
+  const { stateClientes: { clientes }, getClientes } = useContext(ClienteContext)
+  const [habitacionSeleccionada, setHabitacionSeleccionada] = useState(null)
+  const [reservaEncontrada, setReservaEncontrada] = useState(null)
+  const [clienteEncontrado, setClienteEncontrado] = useState(null)
   useEffect(() =>{
     async function cargar(){
       await getHabitaciones()
+      await getReservas()
+      await getClientes()
     }
     cargar()
   }, [])
-  const seleccionarHabitacion = async (id) => {
-    await getHabitacion(id)
-    console.log(stateHabitacion.habitacionSeleccionada)
+  useEffect(() => {
+    if (reservaEncontrada) { // si hay una reserva encontrada se busca el cliente
+      const c = clientes.find((cliente) => cliente.id === reservaEncontrada.cliente) // se busca el cliente que tenga el id de la reserva encontrada
+      setClienteEncontrado(c)
+    }
+  }, [reservaEncontrada, clientes])
+  const seleccionar = async (id) => {
+    await getHabitacion(id) // se envia el id de la habitacion seleccionada para buscarla
+    const r = reservas.find((reserva) => reserva.habitacion === id) // se busca la reserva que tenga el id de la habitacion seleccionada
+    setReservaEncontrada(r)
+
   }
   const habitacionesNoDisponibles = stateHabitacion.habitaciones.filter((habitacion) => habitacion.estado !== 'disponible' && habitacion.estado !== 'mantenimiento')
-
+  
   return (
     <>
-     {stateHabitacion.habitacionSeleccionada ?
+     {stateHabitacion.habitacionSeleccionada && reservaEncontrada && clienteEncontrado ?
     (
-      <Checkout/>
+      <Checkout habitacion={stateHabitacion.habitacionSeleccionada} cliente={clienteEncontrado} reserva={reservaEncontrada} />
     )
     :
     (
@@ -38,7 +54,7 @@ export const ListaHabitaciones = () => {
       
             <p style={{ textTransform: 'capitalize' }}>{habitacion.tipo}</p>
           </div>
-          <button className='btn form-control checkout-boton-fondo' onClick={() => seleccionarHabitacion(habitacion.id)}>Verificar Salida <i class="bi bi-info-circle-fill text-white"></i></button>
+          <button className='btn form-control checkout-boton-fondo' onClick={() => seleccionar(habitacion.id)}>Verificar Salida <i class="bi bi-info-circle-fill text-white"></i></button>
         </div>
         ))}
       </div>

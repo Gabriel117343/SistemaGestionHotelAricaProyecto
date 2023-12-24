@@ -52,6 +52,7 @@ export const ListaReservas = () => {
         })}
         </tbody>
       </table>
+      {stateReserva.reservas.length === 0 && <h1 className='text-center pt-3'>No hay reservas</h1>}
     </div>
   )
 }

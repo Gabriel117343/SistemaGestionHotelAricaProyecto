@@ -53,6 +53,7 @@ export const ReservaProvider = ({ children }) => {
     const token = state.token
     try {
       const res = await getReserva(id, token)
+      console.log(res)
 
       dispatch({
         type: 'GET_RESERVA',
