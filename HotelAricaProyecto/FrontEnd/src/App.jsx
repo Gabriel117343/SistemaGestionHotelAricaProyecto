@@ -15,7 +15,7 @@ import { FormEnvioCorreo } from './pages/FormEnvioCorreo'
 import { CambiarContrasena } from './pages/CambiarContrasena'
 import { CargaDePagina } from './views/CargaDePagina'
 import { PersonalAseoRoutes } from './routes/PersonalAseoRoutes'
-
+import { VentasProvider } from './context/VentasContext'
 function App() {
   const { obtenerUsuarioLogeado, state } = useContext(LoginContext)
   const [loading, setLoading] = useState(true);
@@ -43,8 +43,8 @@ function App() {
     return <CargaDePagina />; // si loading es true se muestra el componente CargaDePagina
   }
   return (
-      
-        <BrowserRouter>
+        <VentasProvider>
+          <BrowserRouter>
             <Routes>
               <Route path="/index" element={<Index />} />
               <Route path="*" element={<Navigate to="/index" />} />{/* Redirecciona a la pagina principal si no encuentra la ruta */}
@@ -60,7 +60,10 @@ function App() {
             <HerramientaDesarrollo />
             <Toaster />
         
-        </BrowserRouter>  
+          </BrowserRouter>
+
+        </VentasProvider>
+          
   )
 }
 

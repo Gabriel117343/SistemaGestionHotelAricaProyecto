@@ -90,6 +90,14 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f'Reserva para {self.cliente} en {self.habitacion}'
+class Venta(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
+    recepcionista = models.ForeignKey(Recepcionista, on_delete=models.SET_NULL, null=True)
+    habitacion = models.ForeignKey(Habitacion, on_delete=models.SET_NULL, null=True)
+    precio_total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f'Venta para {self.cliente} en {self.fecha}'
 class Notificacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     motivo = models.CharField(max_length=50)

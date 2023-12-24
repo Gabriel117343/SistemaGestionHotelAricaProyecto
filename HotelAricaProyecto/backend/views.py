@@ -1,8 +1,8 @@
 from cmath import e
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
-from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer, ClienteSerializer, NotificacionSerializer
-from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista, Notificacion
+from .serializer import UsuarioSerializer, ReservaSerializer, HabitacionSerializer, ClienteSerializer, NotificacionSerializer, VentaSerializer
+from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Reserva, Habitacion, Cliente, Recepcionista, Notificacion, Venta
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
 from django.http import JsonResponse
@@ -291,7 +291,6 @@ class CheckoutView(viewsets.ViewSet):
 
             # Calcular el costo total
             total_cost = CostCalculator.calculate_total_cost(reserva)
-
             return Response({'message': 'Se ha hecho el checkout con éxito', 'total_cost': total_cost}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No se puede hacer el checkout antes de la fecha de fin de la reserva.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -485,5 +484,43 @@ class NotificacionView(viewsets.ModelViewSet):
             notificacion.leida = True
             notificacion.save()
             return Response({'message': 'Notificacion marcada como leida!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class VentaView(viewsets.ModelViewSet):
+    serializer_class = VentaSerializer
+    queryset = Venta.objects.all()
+    permission_classes = [AllowAny] # Utiliza la autenticación basada en tokens
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Ventas obtenidas!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            cliente_id = request.data.get('cliente')
+            habitacion_id = request.data.get('habitacion')
+            precio_total = request.data.get('precio_total')
+            try:
+                cliente = Cliente.objects.get(id=cliente_id)
+                habitacion = Habitacion.objects.get(id=habitacion_id)
+                recepcionista = Recepcionista.objects.get(usuario=request.user)
+                venta = Venta(cliente=cliente, recepcionista=recepcionista, habitacion=habitacion, precio_total=precio_total)
+                venta.save()
+                return Response({'message': 'Venta creada!'}, status=status.HTTP_201_CREATED)
+            except Cliente.DoesNotExist:
+                return Response({'error': 'Cliente no encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+            except Habitacion.DoesNotExist:
+                return Response({'error': 'Habitacion no encontrada'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Ventas obtenidas!'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'Ha ocurrido un error'}, status=status.HTTP_400_BAD_REQUEST)

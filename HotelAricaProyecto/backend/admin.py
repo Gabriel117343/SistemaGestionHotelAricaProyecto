@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Habitacion, Reserva, Cliente, Notificacion
+from .models import Usuario, Recepcionista, PersonalAseo, Administrador, Habitacion, Reserva, Cliente, Notificacion, Venta
 # Register your models here.
 
 admin.site.register(Recepcionista)
@@ -9,6 +9,7 @@ admin.site.register(Habitacion)
 admin.site.register(Reserva)
 admin.site.register(Cliente)
 admin.site.register(Notificacion)
+admin.site.register(Venta)
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ('id', 'rut', 'nombre', 'apellido', 'email', 'telefono', 'jornada', 'rol') # campos a mostrar en la tabla de usuarios en el admin
