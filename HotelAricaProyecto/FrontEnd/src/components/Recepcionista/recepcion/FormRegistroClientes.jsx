@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 import { useClasesInput } from '../../../hooks/useClasesInput'
 import { useFormatos } from '../../../hooks/useFormatos';
-import './styles.css';
+import './recepcion.css'
 import debounce from 'lodash/debounce';
 
 export const FormRegistroClientes = ({ cambiarOpcion }) => {

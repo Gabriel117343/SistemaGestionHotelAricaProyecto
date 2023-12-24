@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import './pages.css'
 import { Habitaciones } from '../../components/Recepcionista/recepcion/Habitaciones'
 import { FaConciergeBell } from "react-icons/fa"
-import './styles.css'
+
 import { NotificacionContext } from '../../context/NotificacionContext'
 import { toast } from 'react-hot-toast'
 export const Recepcion = () => {
@@ -18,8 +18,8 @@ export const Recepcion = () => {
     }
     cargar();
   
-    // Llama a cargar cada 30 segundos
-    const intervalId = setInterval(cargar, 10000) // solo se empezara a ejecutar cuando se este dentro del componente y se detendra cuando se salga de el
+    // Llama a cargar cada 15 segundos
+    const intervalId = setInterval(cargar, 15000) // solo se empezara a ejecutar cuando se este dentro del componente y se detendra cuando se salga de el
   
     // Limpia el intervalo cuando el componente se desmonta
     return () => clearInterval(intervalId);

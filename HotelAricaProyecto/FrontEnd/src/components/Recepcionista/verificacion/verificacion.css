@@ -10,13 +10,13 @@ div.card-checkout-fondo {
   border-bottom: 3px;
 
 }
-button.checkout-boton-fondo {
+button.checkout-boton-fondo-fn {
   display: block;
   width: 100%;
   font-weight: bold;
   color: white;
   
-  background: rgb(230, 118, 14);
+  background: rgb(230, 118, 14) !important;
 }
 .ocupada:hover {
 

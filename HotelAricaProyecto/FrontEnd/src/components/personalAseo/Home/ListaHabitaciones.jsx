@@ -2,14 +2,14 @@ import { useContext, useEffect, useState } from 'react'
 import { HabitacionContext } from '../../../context/HabitacionContext'
 import swal from 'sweetalert2'
 
-import './styles.css'
+import './habitaciones.css'
 
 
 export const ListaHabitaciones = () => {
 
   const { stateHabitacion, getHabitaciones, getHabitacion, editarHabitacion  } = useContext(HabitacionContext)
 
-  const [habitacionSeleccionada, setHabitacionSeleccionada] = useState(null)
+
 
   useEffect(() => {
     async function cargar() {

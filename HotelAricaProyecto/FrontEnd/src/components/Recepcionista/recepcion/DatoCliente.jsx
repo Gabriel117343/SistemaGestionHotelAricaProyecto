@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FormRegistroClientes } from './FormRegistroClientes'
 import { ListaClientes } from './ListaClientes'
-import './styles.css'
+import './recepcion.css'
 export const DatoCliente = () => {
 
   const [opcion, setOpcion] = useState('existente')
