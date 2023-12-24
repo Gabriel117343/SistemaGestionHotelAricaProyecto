@@ -14,7 +14,8 @@ export const Checkout = ({ habitacion, cliente, reserva}) => {
   const { id: idReserva, fecha_inicio, fecha_fin, estado: estadoReserva } = reserva
   const fechaHoy = new Date()
   const [fechaSalida, setFechaSalida] = useState(fechaHoy.toISOString().split('T')[0])
-  const dias = Math.floor((fechaHoy - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24))
+  const dias = Math.floor((fechaHoy - new Date(fecha_inicio)) / (1000 * 60 * 60 * 24)) // Calculo de los dias
+  console.log(dias)
   const total = dias * precio
   
   const navigate = useNavigate()

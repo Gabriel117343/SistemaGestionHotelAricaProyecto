@@ -17,15 +17,14 @@ import { CargaDePagina } from './views/CargaDePagina'
 import { PersonalAseoRoutes } from './routes/PersonalAseoRoutes'
 import { VentasProvider } from './context/VentasContext'
 function App() {
-  const { obtenerUsuarioLogeado, state } = useContext(LoginContext)
+  const { obtenerUsuarioLogeado, state: { usuario, isAuth } } = useContext(LoginContext)
   const [loading, setLoading] = useState(true);
- 
 
-
+  console.log(!!usuario?.rol.includes('recepcionista'))
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      if (state.isAuth === false) {
+      if (isAuth === false) {
         console.log('Volviendo a obtener el usuario logeado');
         obtenerUsuarioLogeado(token).finally(() => {
           setTimeout(() => {
@@ -37,7 +36,7 @@ function App() {
       console.log('No hay token disponible');
       setLoading(false);
     }
-  }, [state.isAuth, location.pathname]);
+  }, [isAuth, location.pathname]);
 
   if (loading) {
     return <CargaDePagina />; // si loading es true se muestra el componente CargaDePagina
@@ -49,7 +48,6 @@ function App() {
               <Route path="/index" element={<Index />} />
               <Route path="*" element={<Navigate to="/index" />} />{/* Redirecciona a la pagina principal si no encuentra la ruta */}
               <Route path="/login" element={<Login />} />
-
               <Route path="/recepcionista/*" element={<RecepcionistaRoutes />} />
               <Route path="/admin/*" element={<AdminRoutes />} /> {/* Rutas de admin "*"" son rutas comodin */}
               <Route path="/aseo/*" element={<PersonalAseoRoutes />} />

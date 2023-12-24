@@ -101,6 +101,7 @@ export const useClasesInput = (initialValue = '') => {
   }
 
   const datoInput = (comprobar, inputComprobar, valor) => {
+  
     // llamar a la funcion que le corresponde
     if (inputComprobar === 'correo') {
       cambiarClaseCorreo(comprobar, valor)

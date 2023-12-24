@@ -12,10 +12,17 @@ export const ListaHabitaciones = () => {
 
 
   useEffect(() => {
-    async function cargar() {
-      await getHabitaciones()
-    }
-    cargar()
+    // Cargar los datos inmediatamente cuando el componente se monta
+    getHabitaciones()
+  }, [])
+  
+  useEffect(() => {
+    // Actualizar los datos cada 10 segundos
+    const interval = setInterval(() => {
+      getHabitaciones()
+    }, 10000)
+  
+    return () => clearInterval(interval) // Limpiar el intervalo cuando el componente se desmonte
   }, [])
   // form para cambiar el estado de la habitacion a disponible através de la api
   const cambiarEstado = (id) => {
