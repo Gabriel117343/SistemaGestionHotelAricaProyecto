@@ -1,7 +1,7 @@
 > [!INFO]
 > Este es un proyecto de Gestion hotelera que utilizara Django como Back End y React como Front End, utiliza libresrias para la interfaz de usuario como Bootstrap, > > lenguajes Python y Javascript
-
-
+=======
+> RUTAS PROTEGIDAS - ACTUALIZACION FIN PROYECTO 24/12/2023
 Manual de Instalación
 Requisitos previos
 •	Node.js (v18.17.1 o superior)
@@ -39,4 +39,3 @@ Esto iniciará el servidor de desarrollo de Django. Puedes acceder a la API en t
 Finalmente acceder a http://localhost:5173
 Repositorio de GitHub del código Fuente
 https://github.com/ProyectoIntegracionllll/SistemaGestionHotelAricaProyecto
-
