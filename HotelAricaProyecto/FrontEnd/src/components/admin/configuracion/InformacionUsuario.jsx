@@ -1,4 +1,5 @@
 
+/* Repositorio del proyecto @Gabriel17343 */
 import './configuracion.css'
 export const InformacionUsuario = ({usuario, usuarioImagen}) => {
   
