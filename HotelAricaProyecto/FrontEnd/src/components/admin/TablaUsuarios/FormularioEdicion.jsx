@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
+/* Repositorio del proyecto @Gabriel17343 */
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef, useId, useContext } from 'react'
 
