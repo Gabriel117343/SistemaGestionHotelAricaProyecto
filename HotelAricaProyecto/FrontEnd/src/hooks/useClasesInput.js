@@ -120,3 +120,4 @@ export const useClasesInput = (initialValue = '') => {
 
   return { advertencia, clase, datoInput }
 }
+/* Repositorio del proyecto @Gabriel17343 */

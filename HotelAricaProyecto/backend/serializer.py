@@ -72,3 +72,4 @@ class VentaSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Notificacion para serializar los datos
         model = Venta
         fields = ['cliente', 'recepcionista', 'habitacion', 'precio_total']
+# Repositorio del proyecto @Gabriel17343
