@@ -13,7 +13,7 @@ export const Grafico = () => {
     name: `Venta ${index + 1}`,
     ventas: parseFloat(venta.precio_total),
   }));
-
+  
   return (
     <BarChart width={300} height={400} data={data}>
       <XAxis dataKey="name" />

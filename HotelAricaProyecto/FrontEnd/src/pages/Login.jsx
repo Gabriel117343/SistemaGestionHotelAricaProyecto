@@ -7,6 +7,8 @@ import debounce from 'lodash/debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' // icono eye para usar en input contraseña
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { LoginContext } from '../context/LoginContext'
+
+
 // importar sweetalert2
 import Swal from 'sweetalert2'
 
@@ -20,6 +22,7 @@ export const Login = () => {
   const idFormLogin = useId() // id para el form de login
 
   const formLoginRef = useRef() // referencia al form de login
+ 
 
   useEffect(() => {
     async function cerrar () {
