@@ -8,6 +8,8 @@ django = "*"
 pylint = "*"
 pylint-celery = "*"
 pylint-django = "*"
+coreapi = "*"
+corsheaders = "*"
 
 [dev-packages]
 

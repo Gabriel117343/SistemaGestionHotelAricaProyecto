@@ -4,6 +4,7 @@ import { InfoHabitaciones } from '../../components/admin/home/InfoHabitaciones'
 import { Grafico } from '../../components/admin/home/Grafico'
 import './pages.css'
 export const Home = () => {
+ 
   return (
     <>
   

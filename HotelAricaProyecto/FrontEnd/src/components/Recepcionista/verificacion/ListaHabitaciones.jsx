@@ -48,7 +48,6 @@ export const ListaHabitaciones = () => {
           <div className='hora'>
             <p>24h</p>
           </div>
-          
           <div className="card-body">
             <h2 className="card-title">{habitacion.numero}</h2>
       

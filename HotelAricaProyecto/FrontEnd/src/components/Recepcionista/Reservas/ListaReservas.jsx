@@ -27,7 +27,6 @@ export const ListaReservas = () => {
       await getClientes()
     }
     cargar()
-    
 
   }, [])
   useEffect(() => {

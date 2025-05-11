@@ -1,10 +1,11 @@
 import { debounce } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { InfoHabitacion } from './InfoHabitacion';
 import { toast } from 'react-hot-toast';
 import swal from 'sweetalert2';
-
+import { HabitacionContext } from '../../../context/HabitacionContext'
 export const FormularioRegistroHabitacion = () => {
+  const { crearHabitacion } = useContext(HabitacionContext)
   const [infoHabitacion, setInfoHabitacion] = useState({
     imagen: '',
     tipo: 'Deluxe',

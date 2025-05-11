@@ -22,8 +22,7 @@ export const LoginProvider = ({ children }) => {
       const res = await login(usuario)
       console.log(res.data)
       if (res.status === 200) {
-        const data = { token: res.data.token };
-
+        const data = { token: res.data.token }
         // Guarda el token en el localstorage
         // porque cuando se recarga la pagina se pierde el estado del usuario y el token se mantiene con localstorage 
         localStorage.setItem('token', data.token);
@@ -31,7 +30,6 @@ export const LoginProvider = ({ children }) => {
           type: 'GUARDAR_USUARIO',
           payload: res.data
         })
-
         return ({ success: true, message: res.data.message, rol: res.data.usuario.rol })
 
       }

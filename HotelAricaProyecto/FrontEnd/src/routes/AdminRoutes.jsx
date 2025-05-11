@@ -14,7 +14,7 @@ import { LoginContext } from '../context/LoginContext'
 export const AdminRoutes = () => {
   const { state: { usuario } } = useContext(LoginContext) // se obtiene el usuario del context
   console.log(!!usuario?.rol.includes('recepcionista')) // se muestra true si el usuario tiene el rol de recepcionista
-
+  
   return (
     <UsuariosProvider>
       <Navbar />
