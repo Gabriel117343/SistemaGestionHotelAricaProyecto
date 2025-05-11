@@ -1,6 +1,6 @@
 # 🏨 Sistema de Gestión Hotelera
 
-<image src="https://github.com/user-attachments/assets/0d6bbb28-6c71-49c4-bcc8-f84897191791" with='700px'>
+<image src="https://github.com/user-attachments/assets/0d6bbb28-6c71-49c4-bcc8-f84897191791" alt="imagen del sistema de gestión hotelera" with='800px'>
 
 > ℹ️ **Descripción**  
 > Este es un proyecto de **Gestión Hotelera** que utiliza **Django** como Back End y **React** como Front End.  
